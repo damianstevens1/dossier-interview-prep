@@ -8,6 +8,13 @@ import type { FlashCard, ParsedProfileIntel, PersonDossier, ProfileStatus, Sourc
 type ViewMode = "deck" | "missions" | "roster" | "import" | "briefing" | "metadata";
 type DeckMotion = "idle" | "next" | "previous" | "shuffle";
 type LottieProps = { animationData: unknown; loop?: boolean; autoplay?: boolean };
+type NavigatorWithDeviceHints = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    effectiveType?: string;
+  };
+  deviceMemory?: number;
+};
 
 const Lottie = (
   (LottieReact.default as unknown as { default?: ComponentType<LottieProps> }).default ?? LottieReact.default
@@ -93,6 +100,26 @@ const DEFAULT_CASE_BRIEF: CaseBriefState = {
 
 function normalizeMissionState(value: MissionState): MissionState {
   return { ...DEFAULT_MISSION_STATE, ...value };
+}
+
+function canRenderDossierStage3D() {
+  if (typeof window === "undefined") return false;
+
+  const prefersReducedMotion =
+    typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const navigatorHints = window.navigator as NavigatorWithDeviceHints;
+  const saveData = Boolean(navigatorHints.connection?.saveData);
+  const lowMemory = typeof navigatorHints.deviceMemory === "number" && navigatorHints.deviceMemory <= 2;
+
+  let hasWebGL = false;
+  try {
+    const canvas = document.createElement("canvas");
+    hasWebGL = Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+  } catch {
+    hasWebGL = false;
+  }
+
+  return hasWebGL && !prefersReducedMotion && !saveData && !lowMemory;
 }
 
 const stopNameParts = new Set([
@@ -310,13 +337,54 @@ function flashCardsFor(person: PersonDossier, allEvidence: SourceEvidence[]) {
   ] satisfies FlashCard[];
 }
 
+function normalizeContactName(name: string) {
+  return name.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function inferredCandidateNames(text: string) {
+  const names = new Set<string>();
+  const patterns = [
+    /\b(?:Mgr\s+)?Interview\s*[-:]\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\s*[-:]/g,
+    /\bCandidate\s*[-:]\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\b/g,
+    /\binvited\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\s+to\s+(?:the\s+)?(?:next\s+)?interview\b/g,
+  ];
+
+  patterns.forEach((pattern) => {
+    Array.from(text.matchAll(pattern)).forEach((match) => {
+      if (match[1]) names.add(normalizeContactName(match[1]));
+    });
+  });
+
+  return names;
+}
+
+function shouldSkipExtractedName(candidate: string, text: string, blockedNames: Set<string>) {
+  const normalizedCandidate = normalizeContactName(candidate);
+  if (blockedNames.has(normalizedCandidate)) return true;
+
+  const lowerText = text.toLowerCase();
+  const index = lowerText.indexOf(normalizedCandidate);
+  if (index < 0) return false;
+
+  const after = lowerText.slice(index + normalizedCandidate.length, index + normalizedCandidate.length + 72);
+  const before = lowerText.slice(Math.max(0, index - 48), index);
+  return (
+    /^\s+(?:to|for)\s+(?:the\s+)?(?:next\s+)?interview\b/.test(after) ||
+    /\b(?:candidate|applicant|interviewee|with)\s+$/.test(before)
+  );
+}
+
 function extractContacts(text: string) {
   const contacts = new Map<string, { name: string; email?: string }>();
+  const blockedNames = inferredCandidateNames(text);
   const emailMatches = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? [];
 
   emailMatches.forEach((email) => {
     const normalized = email.toLowerCase();
-    contacts.set(normalized, { name: nameFromEmail(normalized), email: normalized });
+    const name = nameFromEmail(normalized);
+    if (!blockedNames.has(normalizeContactName(name))) {
+      contacts.set(normalized, { name, email: normalized });
+    }
   });
 
   const nameMatches = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2}\b/g) ?? [];
@@ -324,6 +392,7 @@ function extractContacts(text: string) {
     const parts = candidate.split(/\s+/);
     if (parts.length < 2 || parts.some((part) => stopNameParts.has(part))) return;
     if (parts.some((part) => part.length <= 1)) return;
+    if (shouldSkipExtractedName(candidate, text, blockedNames)) return;
     if (Array.from(contacts.values()).some((contact) => contact.name.toLowerCase() === candidate.toLowerCase())) {
       return;
     }
@@ -661,6 +730,7 @@ function App() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [exportAsset, setExportAsset] = useState<{ url: string; filename: string; label: string } | null>(null);
   const [briefingIndex, setBriefingIndex] = useState(0);
+  const [isDossierStageEnabled, setIsDossierStageEnabled] = useState(false);
   const motionTimer = useRef<number | undefined>(undefined);
   const flightTimer = useRef<number | undefined>(undefined);
   const pointerStart = useRef<number | null>(null);
@@ -704,6 +774,39 @@ function App() {
   const pendingProfileCount = people.filter((person) => person.profileStatus === "profile-pending").length;
   const sourcedPersonCount = people.filter((person) => person.evidenceIds.length > 0).length;
   const currentSourceTypeCount = new Set(currentSources.map((source) => source.type)).size;
+  const missionCompletion = Math.round(
+    ([
+      missionState.profileSearchDone,
+      missionState.profilePhotoCaptured,
+      missionState.profileExperienceCaptured,
+      missionState.profileEvidenceAttached,
+      missionState.documentPdfFound,
+      missionState.documentFactsCaptured,
+      missionState.documentQuestionsBuilt,
+      missionState.documentEvidenceAttached,
+      missionState.debriefPermissionConfirmed,
+      missionState.debriefCaptured,
+      missionState.debriefAnalyzed,
+      missionState.nextStudyPlanReady,
+    ].filter(Boolean).length /
+      12) *
+      100,
+  );
+
+  useEffect(() => {
+    const updateDossierStageCapability = () => setIsDossierStageEnabled(canRenderDossierStage3D());
+    const motionQuery =
+      typeof window !== "undefined" && typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+
+    updateDossierStageCapability();
+    motionQuery?.addEventListener?.("change", updateDossierStageCapability);
+
+    return () => {
+      motionQuery?.removeEventListener?.("change", updateDossierStageCapability);
+    };
+  }, []);
 
   useEffect(() => {
     writeStorage(PEOPLE_STORAGE_KEY, people);
@@ -2538,9 +2641,18 @@ function App() {
 
   return (
     <main className="app-shell clinical-shell">
-      <Suspense fallback={null}>
-        <DossierStage3D hasOpenedCase={hasOpenedCase} view={view} deckMotion={deckMotion} />
-      </Suspense>
+      {isDossierStageEnabled ? (
+        <Suspense fallback={null}>
+          <DossierStage3D
+            currentIndex={currentIndex}
+            deckMotion={deckMotion}
+            hasOpenedCase={hasOpenedCase}
+            missionCompletion={missionCompletion}
+            peopleCount={people.length}
+            view={view}
+          />
+        </Suspense>
+      ) : null}
       <div className="scanline-overlay" aria-hidden="true" />
       <header className="app-header">
         <div>

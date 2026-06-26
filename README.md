@@ -59,6 +59,7 @@ The Import Interview Intel screen is local-only:
 - Upload or paste profile photos/background images you have permission to use.
 - Add a short note describing what the profile background suggests.
 - Parsed temporary dossiers are stored in `localStorage`.
+- The simple parser ignores common candidate-name patterns from invite subjects/body text, so the applicant is less likely to be turned into a false interviewer file.
 - Profile text/media is marked as `User-provided`.
 - The reset button restores the original 8-person seeded deck.
 - Local demo storage is versioned, so major seed/style changes can wipe stale browser data and reload the clean seeded dossier.
@@ -122,6 +123,8 @@ The app includes a lazy-loaded Three.js enhancement in `src/DossierStage3D.tsx`.
 - `maath`
 
 The 3D layer renders a restrained glass-and-folder intelligence object behind the live React UI: translucent glass, stacked dossier sheets, radar rings, evidence points, and pointer-responsive parallax. It is intentionally non-interactive (`pointer-events: none`) so all buttons, swipes, and form controls stay normal HTML/React controls. The stage is split into its own Vite chunk so the base app loads first and the cinematic layer follows as progressive enhancement.
+
+The stage is also guarded before loading. It stays off when the browser reports reduced motion, low data mode, very low device memory, or no usable WebGL context. When enabled, it receives the active view, deck motion, current dossier index, person count, and mission completion percentage so the glass map responds subtly to the actual case state.
 
 ## Theme Assets
 
