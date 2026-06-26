@@ -5019,6 +5019,51 @@ body {
   mix-blend-mode: multiply;
 }
 
+/* Subtle 3D intelligence object under the glass UI. */
+.dossier-stage-3d {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.98;
+  filter: saturate(0.92) contrast(1.1) drop-shadow(0 30px 70px rgba(80, 74, 62, 0.12));
+}
+
+.dossier-stage-3d canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.clinical-shell > :not(.dossier-stage-3d):not(.scanline-overlay) {
+  position: relative;
+  z-index: 1;
+}
+
+.start-folder,
+.clinical-shell .view-header,
+.clinical-shell .case-status-panel,
+.clinical-shell .deck-command-shelf,
+.clinical-shell .metadata-status,
+.clinical-shell .mission-command,
+.clinical-shell .mission-card,
+.clinical-shell .active-target-file {
+  transform: translateZ(0);
+}
+
+@media (min-width: 700px) {
+  .dossier-stage-3d {
+    opacity: 0.78;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dossier-stage-3d {
+    opacity: 0.48;
+  }
+}
+
 .start-folder,
 .simple-file-header,
 .simple-mission-brief,

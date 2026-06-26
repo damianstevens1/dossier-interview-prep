@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent, ComponentType } from "react";
 import * as LottieReact from "lottie-react";
 import { clinicalScanLottie } from "./clinicalScanLottie";
@@ -12,6 +12,7 @@ type LottieProps = { animationData: unknown; loop?: boolean; autoplay?: boolean 
 const Lottie = (
   (LottieReact.default as unknown as { default?: ComponentType<LottieProps> }).default ?? LottieReact.default
 ) as ComponentType<LottieProps>;
+const DossierStage3D = lazy(() => import("./DossierStage3D"));
 
 const PEOPLE_STORAGE_KEY = "dossier-people-glass-v1";
 const EVIDENCE_STORAGE_KEY = "dossier-evidence-glass-v1";
@@ -2537,6 +2538,9 @@ function App() {
 
   return (
     <main className="app-shell clinical-shell">
+      <Suspense fallback={null}>
+        <DossierStage3D hasOpenedCase={hasOpenedCase} view={view} deckMotion={deckMotion} />
+      </Suspense>
       <div className="scanline-overlay" aria-hidden="true" />
       <header className="app-header">
         <div>

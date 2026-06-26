@@ -113,6 +113,16 @@ The app does not use GoldenEye, Bond, 007, Rare, Nintendo, screenshots, logos, c
 
 The visual direction is sophisticated spy dossier and intelligence briefing, not a retro game recreation. Motion should stay subtle: premium paper, radar artifacts, source evidence, restrained scan effects, and readable live text.
 
+## 3D Glass Stage
+
+The app includes a lazy-loaded Three.js enhancement in `src/DossierStage3D.tsx`. It uses:
+
+- `three`
+- `@react-three/fiber`
+- `maath`
+
+The 3D layer renders a restrained glass-and-folder intelligence object behind the live React UI: translucent glass, stacked dossier sheets, radar rings, evidence points, and pointer-responsive parallax. It is intentionally non-interactive (`pointer-events: none`) so all buttons, swipes, and form controls stay normal HTML/React controls. The stage is split into its own Vite chunk so the base app loads first and the cinematic layer follows as progressive enhancement.
+
 ## Theme Assets
 
 User-provided generated images are stored in `public/assets/dossier-theme/` and used only as visual texture/backdrop layers:
