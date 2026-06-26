@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local Netlify folder
+.netlify/
+
+# Local caches and generated state
+.DS_Store
+*.log
+*.tsbuildinfo
+.codex-tools/
