@@ -73,6 +73,42 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     confidence: "verified",
   },
   {
+    id: "screenshot-stephanie-profile-header",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Stephanie profile header",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded LinkedIn profile screenshot shows Stephanie Gross, MHA, RACR as Talent Advisor at Ascension in Talent Acquisition; Ascension; University of Central Florida; Miami-Fort Lauderdale Area; 4,063 followers; and 500+ connections. The profile portrait used in this app was cropped from the user-provided screenshot.",
+    confidence: "user-provided",
+  },
+  {
+    id: "screenshot-stephanie-experience",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Stephanie experience",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded experience screenshots show current role as Talent Advisor at Ascension, Nov 2021 to present, and prior healthcare recruiting roles: Talent Acquisition Recruiter at Jupiter Medical Center, Jul 2020 to Jun 2022; Corporate Recruiter at Memorial Healthcare System, Oct 2017 to Apr 2020; Senior Human Resources Recruiter at Spartanburg Regional Healthcare System, Dec 2015 to Oct 2017; Human Resources Recruiter at Park Ridge Health, Feb 2014 to Dec 2015; HR Assistant and Reception at Florida Hospital, May 2012 to Feb 2014; and Volunteer at Orlando Health, Nov 2011 to May 2012.",
+    confidence: "user-provided",
+  },
+  {
+    id: "screenshot-stephanie-education-certification",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Stephanie education and certification",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded education and certification screenshots show University of Central Florida, Master's degree in Health Services Administration, 2011 to 2013; University of Central Florida, Bachelor of Science in Health Services Administration, 2008 to 2011; J.P. Taravella High School, High School Diploma, General Studies, 2004 to 2008; and Recruiter Academy Certified Recruiter - RACR from Lean Human Capital, issued Dec 2016 and expired Dec 2021.",
+    confidence: "user-provided",
+  },
+  {
+    id: "screenshot-stephanie-skills-interests",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Stephanie skills and interests",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded skills/interests screenshots show top skills including Healthcare with 28 endorsements and Hospitals with 19 endorsements; causes listed as Animal Welfare, Children, Education, and Health; visible groups including Long Term Care / Recruitment / Senior Care / Assisted Living / Skilled Nursing / Healthcare and Leadership Think Tank; and related Ascension talent-acquisition profiles.",
+    confidence: "user-provided",
+  },
+  {
     id: "linkedin-colene-public-profile",
     type: "linkedin",
     title: "Public LinkedIn result: Colene Daniel",
@@ -322,6 +358,33 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     confidence: "verified",
   },
   {
+    id: "screenshot-jennifer-about-clinical-strategy",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Jennifer about and top skills",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded LinkedIn about screenshot frames Jennifer as an enterprise clinical leader shaping systemwide priorities, access transformation, and performance architecture across Ascension markets. It says her work focuses on clinical integration, primary care access, healthcare cost optimization, performance visibility, accountability, collaboration across markets, and more than $24M in net savings. Visible top skills include Enterprise Clinical Strategy, Clinical Integration, Operational Excellence, Healthcare Cost Optimization, and Cross-functional Team Leadership.",
+    confidence: "user-provided",
+  },
+  {
+    id: "screenshot-jennifer-experience-clinical-impact",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Jennifer clinical impact experience",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded experience screenshot shows Ascension experience including Clinical Manager Community Impact, Jul 2024 to present, Indiana, and Clinical Manager, RN, BSN, Strategic Integration, Feb 2023 to Jul 2024. It also shows Clinical Integration Manager at The Resource Group, Spend Management Solutions, an Ascension subsidiary, Nov 2015 to Feb 2023, and RN, Charge Nurse / Preceptor at Riley Children's Hospital IU Health, May 2007 to Nov 2015.",
+    confidence: "user-provided",
+  },
+  {
+    id: "screenshot-jennifer-education-skills",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Jennifer education and skills",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded education and skills screenshot shows University of Indianapolis, Bachelor's Degree, Registered Nursing/Registered Nurse, 2010 to 2012; Ivy Tech Community College, Lafayette Indiana, Associate's Degree, Registered Nursing/Registered Nurse, 2002 to 2007; and visible skills including Physician Alignment and Change Acceleration tied to Clinical Manager Community Impact at Ascension.",
+    confidence: "user-provided",
+  },
+  {
     id: "linkedin-maria-public-profile",
     type: "linkedin",
     title: "Public LinkedIn result: Maria Iniguez",
@@ -330,6 +393,24 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     excerpt:
       "Public LinkedIn result lists Maria Iniguez, MS RN as National Community Benefit Director at Ascension Health.",
     confidence: "verified",
+  },
+  {
+    id: "screenshot-maria-experience-community-benefit",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Maria community benefit experience",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded experience screenshot shows Ascension experience across National Community Benefit Director, Apr 2026 to present, Illinois; Community Benefit Manager for Ascension Illinois and Maryland, Dec 2025 to May 2026; Community Benefit Manager for Ascension Wisconsin, Sep 2024 to Jan 2026; and Manager of Community Benefit for Ascension IL, Apr 2022 to Sep 2024. It also shows AMITA Health experience including System Manager of Community Benefit and Clinical Nurse Manager.",
+    confidence: "user-provided",
+  },
+  {
+    id: "screenshot-maria-education-nursing",
+    type: "screenshot",
+    title: "User-provided LinkedIn screenshot: Maria nursing education",
+    date: "2026-06-28",
+    excerpt:
+      "Uploaded education screenshot shows Northern Illinois University, MS in Advance Practice Nursing, 2006 to 2012; Northern Illinois University, BS in Nursing, 2002 to 2005; and Waubonsee Community College, AS in Nursing, 2000 to 2002.",
+    confidence: "user-provided",
   },
   {
     id: "pre-read-mission-values-screenshot",
@@ -577,11 +658,11 @@ export const PROVENANCE_SECTIONS = [
     id: "profile-policy",
     label: "Profile Policy",
     bullets: [
-      "Stephanie's role is sourced to the supplied email signature evidence.",
+      "Stephanie's role is sourced to the supplied email signature evidence, public LinkedIn role lead, and user-provided LinkedIn screenshots.",
       "Colene's VP Community Health Ministries role is sourced to both user-provided prep/pre-read material and a public LinkedIn result.",
       "Mary, Lisa, Judi, Jennifer, and Maria now have public profile evidence records attached for role/headline context.",
       "Shalon has a public-web role lead attached, but it remains marked as a confirmation lead rather than verified LinkedIn profile data.",
-      "Tenure, current LinkedIn headline, and company-history claims are intentionally absent until sourced.",
+      "Tenure, current LinkedIn headline, and company-history claims are included only where public results or user-provided screenshots directly support them.",
     ],
   },
 ] as const;
@@ -593,27 +674,39 @@ export const SEED_PEOPLE: PersonDossier[] = [
     initials: "SG",
     email: "stephanie.gross1@ascension.org",
     roleFromEmail: "Talent Advisor - System Office Talent Acquisition",
-    profileStatus: "profile-pending",
-    functionInInterview: "Recruiter / organizer / coordinator",
+    roleFromProfile: "Talent Advisor @ Ascension | Talent Acquisition",
+    profileStatus: "verified",
+    functionInInterview: "Recruiter / talent acquisition process lead",
+    profilePhotoUrl: "/assets/profile-packets/stephanie-gross-profile.jpg",
+    profileBackgroundSummary:
+      "User-provided LinkedIn screenshots frame Stephanie as a healthcare talent acquisition professional at Ascension with a long healthcare recruiting path across Ascension, Jupiter Medical Center, Memorial Healthcare System, Spartanburg Regional Healthcare System, Park Ridge Health, Florida Hospital, and Orlando Health. Education and certification screenshots add Health Services Administration training from the University of Central Florida and RACR recruiter certification context. Skills/interests emphasize healthcare, hospitals, recruiting communities, and health/education causes.",
     whyTheyMatter:
-      "Stephanie appears to own the interview logistics and process context. Her signature identifies her as Talent Advisor, and the evidence trail places her around invites, pre-read sharing, and follow-up guidance.",
+      "Stephanie appears to own the interview logistics and process context. Her signature identifies her as Talent Advisor, and the uploaded LinkedIn screenshots show a healthcare talent acquisition background with Ascension, hospital recruiting, Health Services Administration education, and recruiter certification context. Treat her as the process lead and as a useful read on what the talent team will notice in candidate communication.",
     likelyCaresAbout: [
       "Clear, timely candidate communication",
       "A smooth interview process",
       "Whether your answers line up with the team's stated guidance",
       "Gratitude and concise follow-through",
+      "Healthcare recruiting fit and hospital-context credibility",
+      "Mission fit, service orientation, and professionalism",
     ],
     howToSpeakToThem: [
       "Keep messages warm, brief, and specific.",
       "Acknowledge the pre-read and the team's guidance.",
       "Ask process questions without making her chase details.",
       "Treat her as a source of context, not a decision panel substitute.",
+      "Use healthcare and hospital language naturally, without overplaying it.",
+      "Signal reliability: dates, follow-ups, and materials handled cleanly.",
     ],
     smartQuestion:
-      "Is there any context from the team that would help me focus my examples around the alignment-first guidance?",
+      "Based on what the team has shared so far, is there one example or theme you think I should be especially ready to connect back to Ascension's healthcare and community impact context?",
     evidenceIds: [
       "email-stephanie-signature",
       "linkedin-stephanie-public-profile",
+      "screenshot-stephanie-profile-header",
+      "screenshot-stephanie-experience",
+      "screenshot-stephanie-education-certification",
+      "screenshot-stephanie-skills-interests",
       "email-recruiter-followup-jun8",
       "pre-read-slides-jun1",
     ],
@@ -836,23 +929,38 @@ export const SEED_PEOPLE: PersonDossier[] = [
     roleFromProfile: "Enterprise Clinical Strategy Leader (RN)",
     profileStatus: "verified",
     functionInInterview: "Interview panel participant",
+    profilePhotoUrl: "/assets/profile-packets/jennifer-morris-profile.jpg",
+    profileBackgroundSummary:
+      "User-provided LinkedIn screenshots add a clinical strategy profile: Ascension clinical impact work, access transformation, primary care access, performance architecture, clinical integration, healthcare cost optimization, and market-level collaboration. The screenshots also add RN education and frontline clinical leadership context from Riley Children's Hospital IU Health.",
     whyTheyMatter:
-      "Jennifer appears in the updated June 4 hiring leader interview invite and is later mentioned in the user's thank-you email. Public LinkedIn evidence lists her as an Enterprise Clinical Strategy Leader at Ascension.",
+      "Jennifer appears in the updated June 4 hiring leader interview invite and is later mentioned in the user's thank-you email. Public LinkedIn evidence lists her as an Enterprise Clinical Strategy Leader at Ascension, and uploaded screenshots add systemwide clinical strategy, access transformation, cost optimization, and clinical integration context.",
     likelyCaresAbout: [
       "How you build shared context",
       "How you communicate progress",
       "What you ask before proposing a dashboard",
       "Whether you can adapt to panel input",
+      "Access transformation, primary care access, and patient attachment",
+      "Clinical integration, physician alignment, and healthcare cost optimization",
+      "Performance visibility that supports accountability across markets",
     ],
     howToSpeakToThem: [
       "Describe how you would interview stakeholders before changing process.",
       "Use brief examples with a clear before and after.",
       "Invite her view of current visibility gaps.",
       "Connect visibility and alignment answers to clinical strategy, access transformation, and financial stewardship.",
+      "Tie dashboard or rhythm ideas to better execution across markets, not reporting for its own sake.",
+      "Respect the RN and frontline clinical leadership path: make operational examples concrete and patient-impact aware.",
     ],
     smartQuestion:
-      "What would help the team see portfolio progress without adding unnecessary noise?",
-    evidenceIds: ["calendar-hl-jun4", "email-thank-you-jun18", "linkedin-jennifer-public-profile"],
+      "Where do access, clinical integration, or cost-optimization priorities most need clearer visibility across markets right now?",
+    evidenceIds: [
+      "calendar-hl-jun4",
+      "email-thank-you-jun18",
+      "linkedin-jennifer-public-profile",
+      "screenshot-jennifer-about-clinical-strategy",
+      "screenshot-jennifer-experience-clinical-impact",
+      "screenshot-jennifer-education-skills",
+    ],
   },
   {
     id: "maria-iniguez",
@@ -862,23 +970,36 @@ export const SEED_PEOPLE: PersonDossier[] = [
     roleFromProfile: "National Community Benefit Director | Ascension Health",
     profileStatus: "verified",
     functionInInterview: "Interview panel participant",
+    profilePhotoUrl: "/assets/profile-packets/maria-iniguez-profile.jpg",
+    profileBackgroundSummary:
+      "User-provided LinkedIn screenshots add community benefit and nursing context: Ascension national and market community benefit roles across Illinois, Maryland, and Wisconsin, AMITA Health community benefit and clinical nurse management experience, and nursing education from Northern Illinois University and Waubonsee Community College.",
     whyTheyMatter:
-      "Maria appears in the June 4 updated calendar guest list. Public LinkedIn evidence lists her as National Community Benefit Director at Ascension Health.",
+      "Maria appears in the June 4 updated calendar guest list. Public LinkedIn evidence lists her as National Community Benefit Director at Ascension Health, and uploaded screenshots add market-level community benefit progression plus clinical nursing leadership roots.",
     likelyCaresAbout: [
       "How you understand the current environment",
       "Whether your PM approach is practical",
       "How you build alignment with limited context",
       "Clear communication during change",
+      "Community benefit priorities across multiple Ascension markets",
+      "How clinical operations experience connects to community impact",
+      "Respect for local context while creating national visibility",
     ],
     howToSpeakToThem: [
       "Answer from the evidence and connect examples to community benefit and impact alignment.",
       "Position yourself as a context builder first.",
       "Connect alignment work to later reporting visibility.",
       "Ask for her perspective on what the team needs from the role.",
+      "Use language around market needs, community benefit, nursing-informed operations, and measurable service impact.",
+      "Show that you can coordinate across regions without flattening local differences.",
     ],
     smartQuestion:
-      "What should the person in this role learn first before recommending changes?",
-    evidenceIds: ["calendar-hl-jun4", "linkedin-maria-public-profile"],
+      "Across the community benefit markets, what should this role learn first so alignment work respects local needs while still improving national visibility?",
+    evidenceIds: [
+      "calendar-hl-jun4",
+      "linkedin-maria-public-profile",
+      "screenshot-maria-experience-community-benefit",
+      "screenshot-maria-education-nursing",
+    ],
   },
 ];
 
@@ -896,7 +1017,15 @@ const whoAnswer = (person: PersonDossier) => {
   }
 
   if (person.id === "stephanie-gross") {
-    return "Stephanie is the Talent Advisor and coordinator. She sent or supported the interview logistics, shared the pre-read trail, and forwarded the team's guidance. Keep communication warm, concise, and grateful. She is also a source of process and context.";
+    return "Stephanie is the Talent Advisor and talent acquisition process lead. The email signature anchors her role, while user-provided LinkedIn screenshots add Ascension talent acquisition context, healthcare recruiting history, UCF Health Services Administration education, RACR certification context, and skills around healthcare and hospitals. Keep communication warm, concise, grateful, and highly organized. She is a source of process context and a likely reader of candidate professionalism, follow-through, and healthcare fit.";
+  }
+
+  if (person.id === "jennifer-morris") {
+    return "Jennifer is an Enterprise Clinical Strategy Leader and interview panel participant. The new screenshot packet adds Ascension clinical impact work, access transformation, clinical integration, healthcare cost optimization, performance architecture, and RN/frontline clinical leadership context. With her, connect project rhythm and visibility to clinical strategy, market execution, patient access, and measurable accountability.";
+  }
+
+  if (person.id === "maria-iniguez") {
+    return "Maria is the National Community Benefit Director and an interview panel participant. The new screenshots add Ascension community benefit progression across Illinois, Maryland, and Wisconsin, AMITA Health community benefit and clinical nurse management experience, and nursing education. With her, speak in terms of community benefit, regional context, clinical operations roots, and practical alignment across markets.";
   }
 
   return `${person.name} is listed as ${person.functionInInterview}. Current role data is ${roleLine(
@@ -953,6 +1082,21 @@ export const FLASH_CARDS: FlashCard[] = [
     },
   ]),
   {
+    id: "stephanie-profile-screenshot-packet",
+    category: "Evidence",
+    title: "Stephanie profile packet",
+    prompt: "What did the uploaded Stephanie screenshots add?",
+    answer:
+      "The uploaded screenshots add a fuller recruiter profile: Stephanie Gross, MHA, RACR is shown as Talent Advisor at Ascension in Talent Acquisition, with prior healthcare recruiting roles at Jupiter Medical Center, Memorial Healthcare System, Spartanburg Regional Healthcare System, Park Ridge Health, Florida Hospital, and Orlando Health. The packet also adds UCF Health Services Administration education, RACR certification context, healthcare and hospital skills, and interests around healthcare recruiting communities and health/education causes. Use this to communicate with her as a healthcare talent acquisition professional who will notice organization, follow-through, and mission fit.",
+    personId: "stephanie-gross",
+    evidenceIds: [
+      "screenshot-stephanie-profile-header",
+      "screenshot-stephanie-experience",
+      "screenshot-stephanie-education-certification",
+      "screenshot-stephanie-skills-interests",
+    ],
+  },
+  {
     id: "colene-profile-screenshot-packet",
     category: "Evidence",
     title: "Colene profile packet",
@@ -992,6 +1136,33 @@ export const FLASH_CARDS: FlashCard[] = [
       "The uploaded screenshots add a stronger Lisa angle: community health strategic integration, value-based care optimization, Medicare/Medicaid/uninsured transformation, agentic care management, capital and organizational leadership, and a stated intersection of clinical excellence, economic sustainability, and community impact. Use this to speak about sequencing alignment, visibility, and community-health outcomes without sounding dashboard-first.",
     personId: "lisa-stockdale",
     evidenceIds: ["screenshot-lisa-profile-header", "screenshot-lisa-about-skills"],
+  },
+  {
+    id: "jennifer-profile-screenshot-packet",
+    category: "Evidence",
+    title: "Jennifer profile packet",
+    prompt: "What did the uploaded Jennifer screenshots add?",
+    answer:
+      "The uploaded screenshots add a sharper Jennifer angle: enterprise clinical strategy, access transformation, primary care access, clinical integration, healthcare cost optimization, performance architecture, physician alignment, and Change Acceleration. They also add a concrete path from RN and charge nurse/preceptor experience into Ascension clinical impact and strategic integration work. With Jennifer, connect alignment and visibility to clinical execution, market accountability, and measurable patient-access outcomes.",
+    personId: "jennifer-morris",
+    evidenceIds: [
+      "screenshot-jennifer-about-clinical-strategy",
+      "screenshot-jennifer-experience-clinical-impact",
+      "screenshot-jennifer-education-skills",
+    ],
+  },
+  {
+    id: "maria-profile-screenshot-packet",
+    category: "Evidence",
+    title: "Maria profile packet",
+    prompt: "What did the uploaded Maria screenshots add?",
+    answer:
+      "The uploaded screenshots add Maria's community benefit progression across Ascension markets: National Community Benefit Director, Community Benefit Manager roles for Illinois, Maryland, and Wisconsin, Manager of Community Benefit for Ascension IL, and prior AMITA Health community benefit and clinical nurse management experience. They also add nursing education from Northern Illinois University and Waubonsee Community College. With Maria, speak to community benefit, local market needs, nursing-informed operations, and practical national visibility.",
+    personId: "maria-iniguez",
+    evidenceIds: [
+      "screenshot-maria-experience-community-benefit",
+      "screenshot-maria-education-nursing",
+    ],
   },
   {
     id: "mary-profile-screenshot-packet",

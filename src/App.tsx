@@ -1,17 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ChangeEvent, ComponentType } from "react";
-import * as LottieReact from "lottie-react";
-import { clinicalScanLottie } from "./clinicalScanLottie";
+import type { ChangeEvent } from "react";
 import { BRIEFING_CARDS, FLASH_CARDS, PROVENANCE_SECTIONS, SEED_PEOPLE, SOURCE_EVIDENCE } from "./data";
 import type { FlashCard, ParsedProfileIntel, PersonDossier, ProfileStatus, SourceEvidence } from "./types";
 
 type ViewMode = "deck" | "missions" | "roster" | "import" | "briefing" | "metadata";
 type DeckMotion = "idle" | "next" | "previous" | "shuffle";
-type LottieProps = { animationData: unknown; loop?: boolean; autoplay?: boolean };
-
-const Lottie = (
-  (LottieReact.default as unknown as { default?: ComponentType<LottieProps> }).default ?? LottieReact.default
-) as ComponentType<LottieProps>;
 
 const PEOPLE_STORAGE_KEY = "dossier-people-glass-v1";
 const EVIDENCE_STORAGE_KEY = "dossier-evidence-glass-v1";
@@ -19,12 +12,10 @@ const MISSION_STORAGE_KEY = "dossier-missions-glass-v1";
 const START_STORAGE_KEY = "dossier-start-glass-v1";
 const CASE_BRIEF_STORAGE_KEY = "dossier-case-brief-glass-v1";
 const VIEW_NAV: Array<{ id: ViewMode; label: string; detail: string }> = [
-  { id: "missions", label: "Mission", detail: "Start" },
-  { id: "deck", label: "Deck", detail: "Study" },
+  { id: "missions", label: "Today", detail: "Brief" },
+  { id: "deck", label: "Cards", detail: "Study" },
   { id: "roster", label: "People", detail: "Files" },
 ];
-const FORCE_FRESH_CASE =
-  typeof window !== "undefined" && new URLSearchParams(window.location.search).has("fresh");
 
 type MissionFlag =
   | "profileSearchDone"
@@ -139,6 +130,33 @@ function writeStorage<T>(key: string, value: T) {
   } catch {
     // localStorage can fail in private browsing or locked-down contexts.
   }
+}
+
+function mergeSeedPeople(storedPeople: PersonDossier[]) {
+  const seedById = new Map(SEED_PEOPLE.map((person) => [person.id, person]));
+  const seen = new Set<string>();
+  const refreshed = storedPeople.map((person) => {
+    const seed = seedById.get(person.id);
+    if (!seed) return person;
+
+    seen.add(seed.id);
+    return {
+      ...person,
+      ...seed,
+      evidenceIds: mergeList(seed.evidenceIds, person.evidenceIds ?? []),
+      imported: person.imported,
+    };
+  });
+
+  SEED_PEOPLE.forEach((person) => {
+    if (!seen.has(person.id)) refreshed.push(person);
+  });
+
+  return refreshed;
+}
+
+function readPeopleStorage() {
+  return mergeSeedPeople(readStorage(PEOPLE_STORAGE_KEY, SEED_PEOPLE));
 }
 
 function initialsFor(name: string) {
@@ -631,14 +649,12 @@ function EvidenceDrawer({
 }
 
 function App() {
-  const [people, setPeople] = useState<PersonDossier[]>(() => readStorage(PEOPLE_STORAGE_KEY, SEED_PEOPLE));
+  const [people, setPeople] = useState<PersonDossier[]>(() => readPeopleStorage());
   const [customEvidence, setCustomEvidence] = useState<SourceEvidence[]>(() => readStorage(EVIDENCE_STORAGE_KEY, []));
   const [missionState, setMissionState] = useState<MissionState>(() =>
     normalizeMissionState(readStorage(MISSION_STORAGE_KEY, DEFAULT_MISSION_STATE)),
   );
-  const [hasOpenedCase, setHasOpenedCase] = useState<boolean>(() =>
-    FORCE_FRESH_CASE ? false : readStorage(START_STORAGE_KEY, false),
-  );
+  const [hasOpenedCase, setHasOpenedCase] = useState<boolean>(true);
   const [caseBrief, setCaseBrief] = useState<CaseBriefState>(() =>
     readStorage(CASE_BRIEF_STORAGE_KEY, DEFAULT_CASE_BRIEF),
   );
@@ -660,9 +676,18 @@ function App() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [exportAsset, setExportAsset] = useState<{ url: string; filename: string; label: string } | null>(null);
   const [briefingIndex, setBriefingIndex] = useState(0);
+  const [dossierPanelIndex, setDossierPanelIndex] = useState(0);
   const motionTimer = useRef<number | undefined>(undefined);
   const flightTimer = useRef<number | undefined>(undefined);
   const pointerStart = useRef<number | null>(null);
+  const rosterPointerStart = useRef<number | null>(null);
+  const rosterDragValue = useRef(0);
+  const rosterDragFrame = useRef<number | undefined>(undefined);
+  const rosterShowcaseRef = useRef<HTMLDivElement | null>(null);
+  const rosterCardRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const dossierCarouselRef = useRef<HTMLDivElement | null>(null);
+  const dossierScrollFrame = useRef<number | undefined>(undefined);
+  const liquidVideoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<{
     context: AudioContext;
     master: GainNode;
@@ -703,6 +728,83 @@ function App() {
   const pendingProfileCount = people.filter((person) => person.profileStatus === "profile-pending").length;
   const sourcedPersonCount = people.filter((person) => person.evidenceIds.length > 0).length;
   const currentSourceTypeCount = new Set(currentSources.map((source) => source.type)).size;
+
+  useEffect(() => {
+    applyRosterMotion(0);
+  }, [currentIndex, people]);
+
+  useEffect(() => {
+    setDossierPanelIndex(0);
+    dossierCarouselRef.current?.scrollTo({ left: 0 });
+  }, [currentPerson.id, isRevealed]);
+
+  const playLiquidVideo = () => {
+    const video = liquidVideoRef.current;
+    if (!video) return;
+
+    video.controls = false;
+    video.defaultMuted = true;
+    video.muted = true;
+    video.loop = true;
+    video.playbackRate = 0.88;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    void video.play().catch(() => undefined);
+  };
+
+  useEffect(() => {
+    const video = liquidVideoRef.current;
+    if (!video) return undefined;
+
+    const keepMoving = () => {
+      if (!document.hidden && video.paused) {
+        playLiquidVideo();
+      }
+    };
+    const restart = () => {
+      video.currentTime = 0;
+      playLiquidVideo();
+    };
+
+    video.addEventListener("loadedmetadata", playLiquidVideo);
+    video.addEventListener("canplay", playLiquidVideo);
+    video.addEventListener("ended", restart);
+    document.addEventListener("visibilitychange", keepMoving);
+    document.addEventListener("pointerdown", playLiquidVideo, { passive: true });
+    document.addEventListener("touchstart", playLiquidVideo, { passive: true });
+    document.addEventListener("scroll", playLiquidVideo, { passive: true });
+    window.addEventListener("pageshow", keepMoving);
+    window.addEventListener("focus", keepMoving);
+    const timer = window.setInterval(keepMoving, 1600);
+
+    playLiquidVideo();
+
+    return () => {
+      video.removeEventListener("loadedmetadata", playLiquidVideo);
+      video.removeEventListener("canplay", playLiquidVideo);
+      video.removeEventListener("ended", restart);
+      document.removeEventListener("visibilitychange", keepMoving);
+      document.removeEventListener("pointerdown", playLiquidVideo);
+      document.removeEventListener("touchstart", playLiquidVideo);
+      document.removeEventListener("scroll", playLiquidVideo);
+      window.removeEventListener("pageshow", keepMoving);
+      window.removeEventListener("focus", keepMoving);
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (rosterDragFrame.current !== undefined) {
+        window.cancelAnimationFrame(rosterDragFrame.current);
+      }
+      if (dossierScrollFrame.current !== undefined) {
+        window.cancelAnimationFrame(dossierScrollFrame.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     writeStorage(PEOPLE_STORAGE_KEY, people);
@@ -893,15 +995,91 @@ function App() {
     motionTimer.current = window.setTimeout(() => setDeckMotion("idle"), 580);
   }
 
+  function normalizedRosterOffset(rawOffset: number) {
+    if (people.length <= 1) return 0;
+    let offset = rawOffset;
+    const halfway = people.length / 2;
+    if (offset > halfway) offset -= people.length;
+    if (offset < -halfway) offset += people.length;
+    return offset;
+  }
+
+  function rosterMotionForOffset(rawOffset: number) {
+    const offset = normalizedRosterOffset(rawOffset);
+    const absoluteOffset = Math.abs(offset);
+    const visible = absoluteOffset <= 1.85;
+    const limitedOffset = Math.max(-1.75, Math.min(1.75, offset));
+    const easedOffset = Math.sign(limitedOffset) * Math.pow(Math.abs(limitedOffset), 0.86);
+    const translateX = easedOffset * 142;
+    const translateY = absoluteOffset * 7;
+    const translateZ = -absoluteOffset * 64;
+    const rotateY = limitedOffset * -14;
+    const rotateZ = limitedOffset * -0.8;
+    const scale = Math.max(0.82, 1 - absoluteOffset * 0.07);
+    const opacity = visible ? Math.max(0.2, 1 - absoluteOffset * 0.28) : 0;
+    const transform = `translate(-50%, -50%) translate3d(${translateX.toFixed(2)}px, ${translateY.toFixed(
+      2,
+    )}px, ${translateZ.toFixed(2)}px) rotateY(${rotateY.toFixed(2)}deg) rotateZ(${rotateZ.toFixed(
+      2,
+    )}deg) scale(${scale.toFixed(3)})`;
+
+    return {
+      absoluteOffset,
+      opacity,
+      pointerEvents: visible ? ("auto" as const) : ("none" as const),
+      tabIndex: visible ? 0 : -1,
+      transform,
+      zIndex: String(Math.round(100 - absoluteOffset * 10)),
+    };
+  }
+
+  function applyRosterMotion(progress = 0) {
+    people.forEach((person, index) => {
+      const card = rosterCardRefs.current.get(person.id);
+      if (!card) return;
+      const motion = rosterMotionForOffset(index - currentIndex + progress);
+      card.style.transform = motion.transform;
+      card.style.opacity = String(motion.opacity);
+      card.style.pointerEvents = motion.pointerEvents;
+      card.style.zIndex = motion.zIndex;
+      card.tabIndex = motion.tabIndex;
+      card.toggleAttribute("data-motion-center", motion.absoluteOffset < 0.42);
+    });
+  }
+
+  function applyRosterDrag(value: number) {
+    rosterDragValue.current = value;
+    if (rosterDragFrame.current !== undefined) return;
+    rosterDragFrame.current = window.requestAnimationFrame(() => {
+      rosterDragFrame.current = undefined;
+      applyRosterMotion(rosterDragValue.current);
+    });
+  }
+
+  function clearRosterDragState() {
+    rosterDragValue.current = 0;
+    if (rosterDragFrame.current !== undefined) {
+      window.cancelAnimationFrame(rosterDragFrame.current);
+      rosterDragFrame.current = undefined;
+    }
+    rosterShowcaseRef.current?.removeAttribute("data-dragging");
+  }
+
+  function resetRosterDrag() {
+    clearRosterDragState();
+    applyRosterMotion(0);
+  }
+
   function goToIndex(index: number, motion: DeckMotion = "next") {
     if (!people.length) return;
     startMotion(motion);
-    if (motion === "next" || motion === "previous") {
+    if ((motion === "next" || motion === "previous") && view === "deck") {
       window.clearTimeout(flightTimer.current);
       setFlightCard({ person: currentPerson, direction: motion });
       flightTimer.current = window.setTimeout(() => setFlightCard(null), 540);
     }
     setDragX(0);
+    clearRosterDragState();
     setIsRevealed(false);
     setCurrentIndex(((index % people.length) + people.length) % people.length);
   }
@@ -919,6 +1097,7 @@ function App() {
     startMotion("shuffle");
     setFlightCard(null);
     setDragX(0);
+    clearRosterDragState();
     setIsRevealed(false);
     setPeople((previous) => {
       const shuffled = [...previous];
@@ -969,6 +1148,96 @@ function App() {
       return;
     }
     setDragX(0);
+  }
+
+  function onRosterPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    rosterPointerStart.current = event.clientX;
+    rosterDragValue.current = 0;
+    event.currentTarget.setAttribute("data-dragging", "true");
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function onRosterPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (rosterPointerStart.current === null) return;
+    const delta = event.clientX - rosterPointerStart.current;
+    applyRosterDrag(Math.max(-1.18, Math.min(1.18, delta / 150)));
+  }
+
+  function onRosterPointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    if (rosterPointerStart.current === null) return;
+    const delta = event.clientX - rosterPointerStart.current;
+    const shouldGoNext = delta < -42;
+    const shouldGoPrevious = delta > 42;
+
+    rosterPointerStart.current = null;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+
+    if (shouldGoNext) {
+      clearRosterDragState();
+      goNext();
+      return;
+    }
+    if (shouldGoPrevious) {
+      clearRosterDragState();
+      goPrevious();
+      return;
+    }
+
+    resetRosterDrag();
+  }
+
+  function onRosterPointerCancel() {
+    rosterPointerStart.current = null;
+    resetRosterDrag();
+  }
+
+  function openRosterCard(index: number) {
+    if (index !== currentIndex) {
+      goToIndex(index, index > currentIndex ? "next" : "previous");
+    } else {
+      clearRosterDragState();
+    }
+
+    setView("deck");
+    setIsRevealed(true);
+    setDossierPanelIndex(0);
+    window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+  }
+
+  function scrollDossierPanel(index: number) {
+    const container = dossierCarouselRef.current;
+    if (!container) return;
+    const panels = Array.from(container.querySelectorAll<HTMLElement>(".dossier-packet-panel"));
+    const targetIndex = Math.max(0, Math.min(index, panels.length - 1));
+    const target = panels[targetIndex];
+    if (!target) return;
+    setDossierPanelIndex(targetIndex);
+    const left = target.offsetLeft - container.offsetLeft - (container.clientWidth - target.clientWidth) / 2;
+    container.scrollTo({ left, behavior: "smooth" });
+  }
+
+  function onDossierCarouselScroll(event: React.UIEvent<HTMLDivElement>) {
+    const container = event.currentTarget;
+    if (dossierScrollFrame.current !== undefined) return;
+    dossierScrollFrame.current = window.requestAnimationFrame(() => {
+      dossierScrollFrame.current = undefined;
+      const panels = Array.from(container.querySelectorAll<HTMLElement>(".dossier-packet-panel"));
+      if (!panels.length) return;
+      const center = container.getBoundingClientRect().left + container.clientWidth / 2;
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      panels.forEach((panel, index) => {
+        const rect = panel.getBoundingClientRect();
+        const distance = Math.abs(rect.left + rect.width / 2 - center);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      setDossierPanelIndex((current) => (current === closestIndex ? current : closestIndex));
+    });
   }
 
   function parseIntel() {
@@ -1387,6 +1656,18 @@ function App() {
   }
 
   function renderDeck() {
+    const dossierPanelLabels = [
+      "Identity",
+      currentPerson.profileBackdropUrl || currentPerson.profileBackgroundSummary ? "Background" : null,
+      currentProfilePacketSources.length > 0 ? "Packet" : null,
+      "Mark",
+      "Context",
+      "Priorities",
+      "Approach",
+      "Question",
+      activeStudyCard ? "Study" : null,
+    ].filter((label): label is string => Boolean(label));
+
     return (
       <>
         <section className="simple-file-header" aria-label="Current file">
@@ -1397,14 +1678,6 @@ function App() {
               {String(currentIndex + 1).padStart(2, "0")} / {String(people.length).padStart(2, "0")} ·{" "}
               {displayRole(currentPerson)}
             </span>
-          </div>
-          <div className="simple-file-header-actions">
-            <button type="button" onClick={() => setIsEvidenceOpen(true)}>
-              Sources
-            </button>
-            <button type="button" onClick={exportCurrentCard}>
-              Export
-            </button>
           </div>
         </section>
 
@@ -1442,9 +1715,6 @@ function App() {
               <small>{pendingProfileCount} profile pending</small>
             </div>
           </div>
-          <button className="evidence-link wide" type="button" onClick={() => setIsEvidenceOpen(true)}>
-            Open Source Trail
-          </button>
         </section>
 
         <nav className="initials-rail" aria-label="Jump by initials">
@@ -1462,10 +1732,6 @@ function App() {
         </nav>
 
         <section className="deck-command-shelf" aria-label="Deck command shelf">
-          <div className="command-header">
-            <span>FILE CONTROLS</span>
-            <small>Review sequence</small>
-          </div>
           <section className="action-pad" aria-label="Flashcard actions">
             <button type="button" onClick={goPrevious}>
               Previous
@@ -1475,21 +1741,6 @@ function App() {
             </button>
             <button type="button" onClick={goNext}>
               Next
-            </button>
-            <button type="button" onClick={shuffleDeck}>
-              Shuffle
-            </button>
-          </section>
-
-          <section className="secondary-actions" aria-label="Source and output actions">
-            <button type="button" onClick={() => setIsEvidenceOpen(true)}>
-              Show Evidence
-            </button>
-            <button type="button" onClick={exportCurrentCard}>
-              Export Card
-            </button>
-          <button type="button" aria-pressed={audioEnabled} onClick={toggleSignal}>
-              {audioEnabled ? "Ambient Off" : "Ambient On"}
             </button>
           </section>
         </section>
@@ -1504,16 +1755,7 @@ function App() {
           <button type="button" onClick={goNext}>
             Next
           </button>
-          <button type="button" onClick={shuffleDeck}>
-            Shuffle
-          </button>
         </section>
-
-        {exportAsset ? (
-          <a className="export-ready" href={exportAsset.url} download={exportAsset.filename}>
-            {exportAsset.label}
-          </a>
-        ) : null}
 
         <section className="deck-stage" data-motion={deckMotion}>
           {secondNextPerson ? (
@@ -1582,126 +1824,194 @@ function App() {
                 <p className="kicker">REVEALED FILE</p>
                 <h2>{currentPerson.name}</h2>
                 <p className="email-line">{currentPerson.email ?? "Email pending"}</p>
-                <div className="status-grid">
-                  <div>
-                    <span>Role</span>
-                    <strong>{displayRole(currentPerson)}</strong>
-                    <small>{roleConfidence(currentPerson)}</small>
-                  </div>
-                  <div>
-                    <span>Function</span>
-                    <strong>{currentPerson.functionInInterview}</strong>
-                    <small>{statusLabel(currentPerson.profileStatus)}</small>
-                  </div>
-                </div>
 
-                {currentPerson.profileBackdropUrl || currentPerson.profileBackgroundSummary ? (
-                  <section className="profile-media-panel">
-                    <span>Profile background</span>
-                    {currentPerson.profileBackdropUrl ? (
-                      <img src={currentPerson.profileBackdropUrl} alt={`${currentPerson.name} user-provided profile background`} />
-                    ) : null}
-                    <p>
-                      {currentPerson.profileBackgroundSummary ??
-                        "User-provided profile media is attached. No background/context note was supplied."}
-                    </p>
-                    <SourceChips chips={["LINKEDIN: USER PROVIDED", "USER PROVIDED"]} compact />
-                  </section>
-                ) : null}
-
-                {currentProfilePacketSources.length > 0 ? (
-                  <section className="profile-file-stack" aria-label={`${currentPerson.name} profile packet files`}>
-                    <div className="profile-file-stack-top">
-                      <span>PROFILE PACKET</span>
-                      <strong>{currentProfilePacketSources.length} files</strong>
-                    </div>
-                    <div className="profile-file-grid">
-                      {currentProfilePacketSources.map((source, index) => (
-                        <article className="profile-file-slip" key={source.id}>
-                          <div className="profile-file-slip-top">
-                            <span>FILE {String(index + 1).padStart(2, "0")}</span>
-                            <small>{sourceTypeLabel(source.type)}</small>
-                          </div>
-                          <h3>{source.title.replace(/^User-provided LinkedIn screenshot: /, "")}</h3>
-                          <p>{source.excerpt}</p>
-                          <SourceChips
-                            chips={[
-                              source.type === "linkedin" ? "LINKEDIN: VERIFIED" : "SCREENSHOT",
-                              confidenceLabel(source.confidence).toUpperCase(),
-                            ]}
-                            compact
-                          />
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
-
-                <section className="profile-status">
-                  <span>Profile mark</span>
-                  <div>
-                    {(["verified", "user-provided", "profile-pending"] as ProfileStatus[]).map((status) => (
+                <section
+                  className="dossier-packet-shell"
+                  aria-label={`${currentPerson.name} swipeable dossier packet`}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onPointerMove={(event) => event.stopPropagation()}
+                  onPointerUp={(event) => event.stopPropagation()}
+                >
+                  <div className="dossier-packet-toolbar">
+                    <span>{dossierPanelLabels[dossierPanelIndex] ?? "Identity"}</span>
+                    <div>
                       <button
-                        key={status}
                         type="button"
-                        className={currentPerson.profileStatus === status ? "active" : ""}
-                        onClick={() => markProfileStatus(status)}
+                        aria-label="Previous dossier panel"
+                        onClick={() => scrollDossierPanel(dossierPanelIndex - 1)}
                       >
-                        {statusLabel(status)}
+                        Previous
                       </button>
-                    ))}
+                      <button
+                        type="button"
+                        aria-label="Next dossier panel"
+                        onClick={() => scrollDossierPanel(dossierPanelIndex + 1)}
+                      >
+                        Next
+                      </button>
+                    </div>
                   </div>
-                </section>
 
-                <section className="reveal-block">
-                  <h3>Why this person matters</h3>
-                  <p>{currentPerson.whyTheyMatter}</p>
-                </section>
+                  <div
+                    className="dossier-packet-carousel"
+                    ref={dossierCarouselRef}
+                    onScroll={onDossierCarouselScroll}
+                  >
+                    <article className="dossier-packet-panel">
+                      <span>Identity</span>
+                      <h3>Role and function</h3>
+                      <div className="status-grid dossier-status-grid">
+                        <div>
+                          <span>Role</span>
+                          <strong>{displayRole(currentPerson)}</strong>
+                          <small>{roleConfidence(currentPerson)}</small>
+                        </div>
+                        <div>
+                          <span>Function</span>
+                          <strong>{currentPerson.functionInInterview}</strong>
+                          <small>{statusLabel(currentPerson.profileStatus)}</small>
+                        </div>
+                      </div>
+                      <SourceChips chips={currentChips} compact />
+                    </article>
 
-                <section className="reveal-block">
-                  <h3>Likely cares about</h3>
-                  <ul>
-                    {currentPerson.likelyCaresAbout.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
+                    {currentPerson.profileBackdropUrl || currentPerson.profileBackgroundSummary ? (
+                      <article className="dossier-packet-panel profile-media-panel">
+                        <span>Background</span>
+                        <h3>Profile background</h3>
+                        {currentPerson.profileBackdropUrl ? (
+                          <div className="profile-background-artifact">
+                            <img
+                              src={currentPerson.profileBackdropUrl}
+                              alt={`${currentPerson.name} user-provided profile background`}
+                            />
+                          </div>
+                        ) : null}
+                        <p>
+                          {currentPerson.profileBackgroundSummary ??
+                            "User-provided profile media is attached. No background/context note was supplied."}
+                        </p>
+                        <SourceChips chips={["LINKEDIN: USER PROVIDED", "USER PROVIDED"]} compact />
+                      </article>
+                    ) : null}
 
-                <section className="reveal-block">
-                  <h3>How to speak to them</h3>
-                  <ul>
-                    {currentPerson.howToSpeakToThem.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
+                    {currentProfilePacketSources.length > 0 ? (
+                      <article
+                        className="dossier-packet-panel profile-file-stack"
+                        aria-label={`${currentPerson.name} profile packet files`}
+                      >
+                        <div className="profile-file-stack-top">
+                          <span>Profile packet</span>
+                          <strong>{currentProfilePacketSources.length} files</strong>
+                        </div>
+                        <div className="profile-file-grid">
+                          {currentProfilePacketSources.map((source, index) => (
+                            <article className="profile-file-slip" key={source.id}>
+                              <div className="profile-file-slip-top">
+                                <span>FILE {String(index + 1).padStart(2, "0")}</span>
+                                <small>{sourceTypeLabel(source.type)}</small>
+                              </div>
+                              <h3>{source.title.replace(/^User-provided LinkedIn screenshot: /, "")}</h3>
+                              <p>{source.excerpt}</p>
+                              <SourceChips
+                                chips={[
+                                  source.type === "linkedin" ? "LINKEDIN: VERIFIED" : "SCREENSHOT",
+                                  confidenceLabel(source.confidence).toUpperCase(),
+                                ]}
+                                compact
+                              />
+                            </article>
+                          ))}
+                        </div>
+                      </article>
+                    ) : null}
 
-                <section className="reveal-block">
-                  <h3>Smart question to ask</h3>
-                  <p>{currentPerson.smartQuestion}</p>
-                </section>
-
-                {activeStudyCard ? (
-                  <section className="study-card">
-                    <div className="study-card-top">
-                      <span>{activeStudyCard.category}</span>
-                      <div className="study-pips">
-                        {currentStudyCards.map((card, index) => (
+                    <article className="dossier-packet-panel profile-status">
+                      <span>Profile mark</span>
+                      <h3>Evidence status</h3>
+                      <div>
+                        {(["verified", "user-provided", "profile-pending"] as ProfileStatus[]).map((status) => (
                           <button
-                            key={card.id}
+                            key={status}
                             type="button"
-                            aria-label={`Show flashcard ${index + 1}`}
-                            className={index === studyCardIndex ? "active" : ""}
-                            onClick={() => setStudyCardIndex(index)}
-                          />
+                            className={currentPerson.profileStatus === status ? "active" : ""}
+                            onClick={() => markProfileStatus(status)}
+                          >
+                            {statusLabel(status)}
+                          </button>
                         ))}
                       </div>
-                    </div>
-                    <h3>{activeStudyCard.prompt}</h3>
-                    <p>{activeStudyCard.answer}</p>
-                    <SourceChips chips={activeStudyCardChips} compact />
-                  </section>
-                ) : null}
+                    </article>
+
+                    <article className="dossier-packet-panel reveal-card-panel">
+                      <span>Context</span>
+                      <h3>Why this person matters</h3>
+                      <p>{currentPerson.whyTheyMatter}</p>
+                    </article>
+
+                    <article className="dossier-packet-panel reveal-card-panel">
+                      <span>Priorities</span>
+                      <h3>Likely cares about</h3>
+                      <ul>
+                        {currentPerson.likelyCaresAbout.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </article>
+
+                    <article className="dossier-packet-panel reveal-card-panel">
+                      <span>Approach</span>
+                      <h3>How to speak to them</h3>
+                      <ul>
+                        {currentPerson.howToSpeakToThem.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </article>
+
+                    <article className="dossier-packet-panel reveal-card-panel">
+                      <span>Question</span>
+                      <h3>Smart question to ask</h3>
+                      <p>{currentPerson.smartQuestion}</p>
+                    </article>
+
+                    {activeStudyCard ? (
+                      <article className="dossier-packet-panel reveal-card-panel study-card">
+                        <div className="study-card-top">
+                          <span>{activeStudyCard.category}</span>
+                          <div className="study-pips">
+                            {currentStudyCards.map((card, index) => (
+                              <button
+                                key={card.id}
+                                type="button"
+                                aria-label={`Show flashcard ${index + 1}`}
+                                className={index === studyCardIndex ? "active" : ""}
+                                onClick={() => setStudyCardIndex(index)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <h3>{activeStudyCard.prompt}</h3>
+                        <p>{activeStudyCard.answer}</p>
+                        <SourceChips chips={activeStudyCardChips} compact />
+                      </article>
+                    ) : null}
+                  </div>
+
+                  <nav className="dossier-panel-pips" aria-label="Dossier packet panels">
+                    {dossierPanelLabels.map((label, index) => (
+                      <button
+                        key={`${label}-${index}`}
+                        type="button"
+                        className={index === dossierPanelIndex ? "active" : ""}
+                        aria-label={`Show ${label} panel`}
+                        onClick={() => scrollDossierPanel(index)}
+                      >
+                        <span>{label}</span>
+                      </button>
+                    ))}
+                  </nav>
+                </section>
 
                 <SourceChips chips={currentChips} />
               </div>
@@ -1720,22 +2030,50 @@ function App() {
             <p className="kicker">DOSSIER INDEX</p>
             <h2>Interview file roster</h2>
           </div>
-          <button type="button" onClick={() => setView("deck")}>
-            Back to Deck
-          </button>
         </div>
 
-        <div className="roster-grid">
+        <div
+          className="roster-showcase"
+          ref={rosterShowcaseRef}
+          aria-label="Swipe through people"
+          onPointerDown={onRosterPointerDown}
+          onPointerMove={onRosterPointerMove}
+          onPointerUp={onRosterPointerUp}
+          onPointerCancel={onRosterPointerCancel}
+        >
+          <div className="roster-orbit">
           {people.map((person, index) => {
             const chips = sourceChips(person.evidenceIds, sourcesById, person);
+            const motion = rosterMotionForOffset(index - currentIndex);
             return (
-              <button
-                className="roster-card"
+              <article
+                className={index === currentIndex ? "roster-card roster-orbit-card active" : "roster-card roster-orbit-card"}
                 key={person.id}
-                type="button"
+                ref={(node) => {
+                  if (node) {
+                    rosterCardRefs.current.set(person.id, node);
+                  } else {
+                    rosterCardRefs.current.delete(person.id);
+                  }
+                }}
+                aria-current={index === currentIndex ? "true" : undefined}
+                data-motion-center={motion.absoluteOffset < 0.42 ? "" : undefined}
+                tabIndex={motion.tabIndex}
+                style={{
+                  opacity: motion.opacity,
+                  pointerEvents: motion.pointerEvents,
+                  transform: motion.transform,
+                  zIndex: motion.zIndex,
+                }}
+                role="button"
                 onClick={() => {
-                  setCurrentIndex(index);
-                  setView("deck");
+                  openRosterCard(index);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openRosterCard(index);
+                  }
                 }}
               >
                 <span className="mini-tab">{person.initials}</span>
@@ -1749,10 +2087,24 @@ function App() {
                 <strong>{person.name}</strong>
                 <small>{displayRole(person)}</small>
                 <SourceChips chips={chips} compact />
-              </button>
+              </article>
             );
           })}
+          </div>
         </div>
+
+        <div className="roster-orbit-controls" aria-label="Roster carousel controls">
+          <button type="button" onClick={goPrevious}>
+            Previous
+          </button>
+          <button className="primary-action" type="button" onClick={() => openRosterCard(currentIndex)}>
+            Open File
+          </button>
+          <button type="button" onClick={goNext}>
+            Next
+          </button>
+        </div>
+
       </section>
     );
   }
@@ -1846,9 +2198,6 @@ function App() {
           <p>
             Start with the invite, the people named, the role, the date, and any material you were sent.
           </p>
-          <div className="clinical-scan-window" aria-hidden="true">
-            <Lottie animationData={clinicalScanLottie} loop autoplay />
-          </div>
           <div className="start-case-lines" aria-label="Case intake checklist">
             <span>Recruiter message</span>
             <span>Date and time</span>
@@ -1958,6 +2307,148 @@ function App() {
   }
 
   function renderMissions() {
+    const verifiedPeopleCount = people.filter((person) => person.profileStatus === "verified").length;
+    const verifiedEvidenceCount = allEvidence.filter((source) => source.confidence === "verified").length;
+    const visiblePeople = people.slice(0, 6);
+    const sourceTypeCount = new Set(allEvidence.map((source) => source.type)).size;
+    const activeFileNumber = `${String(currentIndex + 1).padStart(2, "0")} / ${String(people.length).padStart(2, "0")}`;
+
+    return (
+      <section className="missions-view ready-home">
+        <article className="ready-hero-panel" aria-label="Upcoming interview brief">
+          <div className="ready-hero-copy">
+            <p className="kicker">UPCOMING INTERVIEW</p>
+            <h2>Prep file is loaded.</h2>
+            <p>
+              The panel, recruiter context, source notes, and study cards are already staged. Start with the people,
+              then reveal the talking points you need in the room.
+            </p>
+          </div>
+          <button
+            className="primary-action ready-primary-action"
+            type="button"
+            onClick={() => {
+              setView("deck");
+              setIsRevealed(false);
+            }}
+          >
+            Begin Study
+          </button>
+          <div className="ready-stats-grid" aria-label="Loaded dossier summary">
+            <span>
+              <strong>{people.length}</strong>
+              <small>people</small>
+            </span>
+            <span>
+              <strong>{verifiedPeopleCount}</strong>
+              <small>verified</small>
+            </span>
+            <span>
+              <strong>{allEvidence.length}</strong>
+              <small>sources</small>
+            </span>
+          </div>
+        </article>
+
+        <article className="ready-active-file" aria-label="Current person file">
+          <div className="ready-section-heading">
+            <div>
+              <p className="kicker">CURRENT FILE</p>
+              <h3>{currentPerson.name}</h3>
+            </div>
+            <span>{activeFileNumber}</span>
+          </div>
+          <button
+            className="ready-active-card"
+            type="button"
+            onClick={() => {
+              setView("deck");
+              setIsRevealed(false);
+            }}
+          >
+            <span className={currentPerson.profilePhotoUrl ? "ready-avatar has-photo" : "ready-avatar"}>
+              {currentPerson.profilePhotoUrl ? (
+                <img src={currentPerson.profilePhotoUrl} alt={`${currentPerson.name} user-provided profile`} />
+              ) : (
+                currentPerson.initials
+              )}
+            </span>
+            <span className="ready-active-copy">
+              <strong>{displayRole(currentPerson)}</strong>
+              <small>{currentPerson.functionInInterview}</small>
+              <SourceChips chips={currentChips.slice(0, 4)} compact />
+            </span>
+          </button>
+        </article>
+
+        <section className="ready-panel-roster" aria-label="Interview people">
+          <div className="ready-section-heading">
+            <div>
+              <p className="kicker">INTERVIEW PEOPLE</p>
+              <h3>Swipe roster, open files.</h3>
+            </div>
+            <span>{sourceTypeCount} source types</span>
+          </div>
+          <div className="ready-person-list">
+            {visiblePeople.map((person, index) => {
+              const chips = sourceChips(person.evidenceIds, sourcesById, person).slice(0, 2);
+              return (
+                <button
+                  className={index === currentIndex ? "ready-person-row active" : "ready-person-row"}
+                  key={person.id}
+                  type="button"
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    setView("deck");
+                    setIsRevealed(false);
+                  }}
+                >
+                  <span className={person.profilePhotoUrl ? "ready-mini-avatar has-photo" : "ready-mini-avatar"}>
+                    {person.profilePhotoUrl ? (
+                      <img src={person.profilePhotoUrl} alt={`${person.name} user-provided profile`} />
+                    ) : (
+                      person.initials
+                    )}
+                  </span>
+                  <span>
+                    <strong>{person.name}</strong>
+                    <small>{displayRole(person)}</small>
+                  </span>
+                  <SourceChips chips={chips} compact />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <article className="ready-focus-panel" aria-label="Study focus">
+          <div className="ready-section-heading">
+            <div>
+              <p className="kicker">ROOM STRATEGY</p>
+              <h3>Keep the prep tight.</h3>
+            </div>
+            <span>{verifiedEvidenceCount} verified records</span>
+          </div>
+          <ol>
+            <li>
+              <strong>Know each person.</strong>
+              <span>Role, function in the process, and what they likely care about.</span>
+            </li>
+            <li>
+              <strong>Anchor to alignment.</strong>
+              <span>Emphasize communication rhythm, cross-market clarity, and practical execution.</span>
+            </li>
+            <li>
+              <strong>Reveal only when studying.</strong>
+              <span>Use the card deck as a rehearsal surface, not a crowded dashboard.</span>
+            </li>
+          </ol>
+        </article>
+      </section>
+    );
+  }
+
+  function renderMissionOperations() {
     const profileProgress = [
       missionState.profileSearchDone,
       missionState.profilePhotoCaptured,
@@ -2538,6 +3029,29 @@ function App() {
   return (
     <main className="app-shell clinical-shell">
       <div className="scanline-overlay" aria-hidden="true" />
+      <div className="liquid-video-backdrop" aria-hidden="true">
+        <video
+          autoPlay
+          disablePictureInPicture
+          loop
+          muted
+          controls={false}
+          ref={liquidVideoRef}
+          onCanPlay={(event) => {
+            if (event.currentTarget.paused) {
+              void event.currentTarget.play().catch(() => undefined);
+            }
+          }}
+          onEnded={(event) => {
+            event.currentTarget.currentTime = 0;
+            void event.currentTarget.play().catch(() => undefined);
+          }}
+          onLoadedMetadata={playLiquidVideo}
+          playsInline
+          preload="auto"
+          src="/assets/glass-ui/dossier-liquid-glass-texture.mp4"
+        />
+      </div>
       <header className="app-header">
         <div>
           <p className="kicker">PRIVATE INTERVIEW PREP</p>
@@ -2548,10 +3062,6 @@ function App() {
         </div>
       </header>
 
-      {!hasOpenedCase ? renderStartGate() : null}
-
-      {hasOpenedCase ? (
-        <>
       {renderCaseNav()}
 
       {view === "deck" ? renderDeck() : null}
@@ -2562,8 +3072,6 @@ function App() {
       {view === "metadata" ? renderMetadata() : null}
 
       <EvidenceDrawer isOpen={isEvidenceOpen} onClose={() => setIsEvidenceOpen(false)} person={currentPerson} sources={currentSources} />
-        </>
-      ) : null}
     </main>
   );
 }
