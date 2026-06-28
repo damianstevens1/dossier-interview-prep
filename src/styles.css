@@ -6096,6 +6096,170 @@ button {
   }
 }
 
+/* Final interaction pass: make People a tappable vertical directory, not a sparse carousel. */
+.clinical-shell .roster-directory-view {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom)) !important;
+}
+
+.clinical-shell .view-count {
+  align-self: flex-start;
+  padding: 0.48rem 0.68rem;
+  border: 1px solid var(--prep-line);
+  border-radius: 999px;
+  color: var(--prep-ink-soft);
+  background: var(--prep-paper-2);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.clinical-shell .roster-directory {
+  display: grid;
+  gap: 0.78rem;
+}
+
+.clinical-shell .roster-directory-card {
+  appearance: none;
+  width: 100%;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 0.86rem;
+  align-items: center;
+  padding: 0.86rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 24px !important;
+  color: var(--prep-ink) !important;
+  background: rgba(255, 253, 247, 0.94) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.clinical-shell .roster-directory-card.active {
+  border-color: rgba(39, 102, 106, 0.28) !important;
+  background: linear-gradient(140deg, #fffdf7, rgba(218, 234, 214, 0.72)) !important;
+}
+
+.clinical-shell .roster-directory-card:active {
+  transform: translateY(1px);
+  background: rgba(218, 234, 214, 0.78) !important;
+}
+
+.clinical-shell .roster-directory-card:focus-visible,
+.clinical-shell .expert-person-row:focus-visible {
+  outline: 3px solid rgba(39, 102, 106, 0.28);
+  outline-offset: 3px;
+}
+
+.clinical-shell .roster-directory-photo {
+  width: 82px;
+  height: 82px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 4px solid var(--prep-paper);
+  border-radius: 50%;
+  color: var(--prep-teal-dark);
+  background: var(--prep-sage);
+  box-shadow: 0 14px 28px rgba(48, 64, 55, 0.14);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.clinical-shell .roster-directory-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: none !important;
+}
+
+.clinical-shell .roster-directory-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+}
+
+.clinical-shell .roster-directory-copy strong {
+  color: var(--prep-ink) !important;
+  font-size: clamp(1.22rem, 5.4vw, 1.74rem);
+  font-weight: 940;
+  line-height: 1;
+}
+
+.clinical-shell .roster-directory-copy small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--prep-ink) !important;
+  font-size: 0.92rem;
+  font-weight: 760;
+  line-height: 1.2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.clinical-shell .roster-directory-copy span {
+  color: var(--prep-teal-dark);
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.clinical-shell .roster-directory-copy p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0.16rem 0 0;
+  color: var(--prep-ink-soft) !important;
+  font-size: 0.84rem;
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.clinical-shell button.expert-person-row {
+  appearance: none;
+  width: 100%;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--prep-ink) !important;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.clinical-shell button.expert-person-row:active {
+  background: rgba(218, 234, 214, 0.72) !important;
+}
+
+.clinical-shell button.expert-person-row.active {
+  background: var(--prep-sage) !important;
+}
+
+@media (max-width: 430px) {
+  .clinical-shell .roster-directory-card {
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 0.76rem;
+    padding: 0.78rem !important;
+    border-radius: 22px !important;
+  }
+
+  .clinical-shell .roster-directory-photo {
+    width: 74px;
+    height: 74px;
+  }
+
+  .clinical-shell .roster-directory-copy p {
+    -webkit-line-clamp: 2;
+  }
+}
+
 /* Minimal correction pass: remove old controls, prioritize person content, and restore easy vertical scrolling. */
 main.app-shell.clinical-shell {
   padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)) !important;

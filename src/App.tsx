@@ -679,6 +679,7 @@ function App() {
   const dossierCarouselRef = useRef<HTMLDivElement | null>(null);
   const dossierScrollFrame = useRef<number | undefined>(undefined);
   const liquidVideoRef = useRef<HTMLVideoElement | null>(null);
+  const revealAfterPersonSelect = useRef(false);
   const audioRef = useRef<{
     context: AudioContext;
     master: GainNode;
@@ -822,8 +823,10 @@ function App() {
   }, [currentIndex, people.length]);
 
   useEffect(() => {
+    const shouldReveal = revealAfterPersonSelect.current;
+    revealAfterPersonSelect.current = false;
     setStudyCardIndex(0);
-    setIsRevealed(false);
+    setIsRevealed(shouldReveal);
     setIsEvidenceOpen(false);
     setProfileTargetId(currentPerson.id);
     setExportAsset(null);
@@ -1170,6 +1173,7 @@ function App() {
   }
 
   function openRosterCard(index: number) {
+    revealAfterPersonSelect.current = true;
     if (index !== currentIndex) {
       goToIndex(index, index > currentIndex ? "next" : "previous");
     } else {
@@ -1949,84 +1953,44 @@ function App() {
 
   function renderRoster() {
     return (
-      <section className="roster-view">
+      <section className="roster-view roster-directory-view">
         <div className="view-header">
           <div>
             <p className="kicker">PEOPLE</p>
             <h2>People in the room</h2>
           </div>
+          <span className="view-count">{people.length} people</span>
         </div>
 
-        <div
-          className="roster-showcase"
-          ref={rosterShowcaseRef}
-          aria-label="Swipe through people"
-          onPointerDown={onRosterPointerDown}
-          onPointerMove={onRosterPointerMove}
-          onPointerUp={onRosterPointerUp}
-          onPointerCancel={onRosterPointerCancel}
-        >
-          <div className="roster-orbit">
+        <div className="roster-directory" aria-label="Open a person prep card">
           {people.map((person, index) => {
-            const chips = sourceChips(person.evidenceIds, sourcesById, person);
-            const motion = rosterMotionForOffset(index - currentIndex);
             return (
-              <article
-                className={index === currentIndex ? "roster-card roster-orbit-card active" : "roster-card roster-orbit-card"}
+              <button
+                type="button"
+                className={index === currentIndex ? "roster-directory-card active" : "roster-directory-card"}
                 key={person.id}
-                ref={(node) => {
-                  if (node) {
-                    rosterCardRefs.current.set(person.id, node);
-                  } else {
-                    rosterCardRefs.current.delete(person.id);
-                  }
-                }}
                 aria-current={index === currentIndex ? "true" : undefined}
-                data-motion-center={motion.absoluteOffset < 0.42 ? "" : undefined}
-                tabIndex={motion.tabIndex}
-                style={{
-                  opacity: motion.opacity,
-                  pointerEvents: motion.pointerEvents,
-                  transform: motion.transform,
-                  zIndex: motion.zIndex,
-                }}
-                role="button"
+                aria-label={`Open ${person.name}`}
                 onClick={() => {
                   openRosterCard(index);
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    openRosterCard(index);
-                  }
-                }}
               >
-                <strong>{person.name}</strong>
-                <small>{displayRole(person)}</small>
-                <span className={person.profilePhotoUrl ? "mini-portrait has-photo" : "mini-portrait"}>
+                <span className={person.profilePhotoUrl ? "roster-directory-photo has-photo" : "roster-directory-photo"}>
                   {person.profilePhotoUrl ? (
                     <img src={person.profilePhotoUrl} alt={`${person.name} user-provided profile`} />
                   ) : (
                     person.initials
                   )}
                 </span>
-                <SourceChips chips={chips} compact />
-              </article>
+                <span className="roster-directory-copy">
+                  <strong>{person.name}</strong>
+                  <small>{displayRole(person)}</small>
+                  <span>{person.functionInInterview}</span>
+                  <p>{person.whyTheyMatter}</p>
+                </span>
+              </button>
             );
           })}
-          </div>
-        </div>
-
-        <div className="roster-orbit-controls" aria-label="Roster carousel controls">
-          <button type="button" onClick={goPrevious}>
-            Previous
-          </button>
-          <button className="primary-action" type="button" onClick={() => openRosterCard(currentIndex)}>
-            Open
-          </button>
-          <button type="button" onClick={goNext}>
-            Next
-          </button>
         </div>
 
       </section>
@@ -2323,11 +2287,16 @@ function App() {
           <div className="expert-panel-list">
             {panelPeople.map((person, index) => {
               const chips = sourceChips(person.evidenceIds, sourcesById, person).slice(0, 1);
+              const personIndex = people.findIndex((candidate) => candidate.id === person.id);
+              const openIndex = personIndex >= 0 ? personIndex : index;
               return (
-                <article
+                <button
+                  type="button"
                   className={index === currentIndex ? "expert-person-row active" : "expert-person-row"}
                   key={person.id}
                   aria-current={index === currentIndex ? "true" : undefined}
+                  aria-label={`Open ${person.name}`}
+                  onClick={() => openRosterCard(openIndex)}
                 >
                   <span className={person.profilePhotoUrl ? "expert-mini-avatar has-photo" : "expert-mini-avatar"}>
                     {person.profilePhotoUrl ? (
@@ -2341,7 +2310,7 @@ function App() {
                     <small>{displayRole(person)}</small>
                   </span>
                   <SourceChips chips={chips} compact />
-                </article>
+                </button>
               );
             })}
           </div>
