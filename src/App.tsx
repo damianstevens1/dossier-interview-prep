@@ -2309,101 +2309,103 @@ function App() {
   function renderMissions() {
     const verifiedPeopleCount = people.filter((person) => person.profileStatus === "verified").length;
     const verifiedEvidenceCount = allEvidence.filter((source) => source.confidence === "verified").length;
-    const visiblePeople = people.slice(0, 6);
     const sourceTypeCount = new Set(allEvidence.map((source) => source.type)).size;
     const activeFileNumber = `${String(currentIndex + 1).padStart(2, "0")} / ${String(people.length).padStart(2, "0")}`;
+    const panelPeople = people.slice(0, 8);
+    const focusPeople = people.slice(0, 4);
 
     return (
-      <section className="missions-view ready-home">
-        <article className="ready-hero-panel" aria-label="Upcoming interview brief">
-          <div className="ready-hero-copy">
-            <p className="kicker">UPCOMING INTERVIEW</p>
-            <h2>Prep file is loaded.</h2>
-            <p>
-              The panel, recruiter context, source notes, and study cards are already staged. Start with the people,
-              then reveal the talking points you need in the room.
-            </p>
+      <section className="missions-view expert-home">
+        <article className="expert-command-panel" aria-label="Upcoming interview command brief">
+          <div className="expert-command-topline">
+            <span>Final manager interview</span>
+            <span>Private dossier</span>
           </div>
-          <button
-            className="primary-action ready-primary-action"
-            type="button"
-            onClick={() => {
-              setView("deck");
-              setIsRevealed(false);
-            }}
-          >
-            Begin Study
-          </button>
-          <div className="ready-stats-grid" aria-label="Loaded dossier summary">
-            <span>
-              <strong>{people.length}</strong>
-              <small>people</small>
-            </span>
-            <span>
-              <strong>{verifiedPeopleCount}</strong>
-              <small>verified</small>
-            </span>
-            <span>
-              <strong>{allEvidence.length}</strong>
-              <small>sources</small>
-            </span>
+          <div className="expert-command-main">
+            <div>
+              <p className="kicker">UPCOMING INTERVIEW</p>
+              <h2>Panel brief, ready.</h2>
+              <p>
+                People, recruiter context, profile evidence, and answer angles are staged for the interview. Study the
+                panel first; reveal the deeper file only when rehearsing.
+              </p>
+            </div>
+            <div className="expert-signal-lens" aria-hidden="true">
+              <span />
+              <i />
+            </div>
+          </div>
+          <div className="expert-command-footer">
+            <button
+              className="primary-action expert-study-button"
+              type="button"
+              onClick={() => {
+                setView("deck");
+                setIsRevealed(false);
+              }}
+            >
+              Study Panel
+            </button>
+            <dl className="expert-metric-strip" aria-label="Loaded dossier summary">
+              <div>
+                <dt>People</dt>
+                <dd>{people.length}</dd>
+              </div>
+              <div>
+                <dt>Verified</dt>
+                <dd>{verifiedPeopleCount}</dd>
+              </div>
+              <div>
+                <dt>Sources</dt>
+                <dd>{allEvidence.length}</dd>
+              </div>
+            </dl>
           </div>
         </article>
 
-        <article className="ready-active-file" aria-label="Current person file">
-          <div className="ready-section-heading">
-            <div>
-              <p className="kicker">CURRENT FILE</p>
-              <h3>{currentPerson.name}</h3>
-            </div>
-            <span>{activeFileNumber}</span>
-          </div>
+        <article className="expert-current-file" aria-label="Current person file">
           <button
-            className="ready-active-card"
+            className="expert-current-file-button"
             type="button"
             onClick={() => {
               setView("deck");
               setIsRevealed(false);
             }}
           >
-            <span className={currentPerson.profilePhotoUrl ? "ready-avatar has-photo" : "ready-avatar"}>
+            <span className={currentPerson.profilePhotoUrl ? "expert-current-avatar has-photo" : "expert-current-avatar"}>
               {currentPerson.profilePhotoUrl ? (
                 <img src={currentPerson.profilePhotoUrl} alt={`${currentPerson.name} user-provided profile`} />
               ) : (
                 currentPerson.initials
               )}
             </span>
-            <span className="ready-active-copy">
-              <strong>{displayRole(currentPerson)}</strong>
+            <span className="expert-current-copy">
               <small>{currentPerson.functionInInterview}</small>
-              <SourceChips chips={currentChips.slice(0, 4)} compact />
+              <strong>{currentPerson.name}</strong>
+              <span>{displayRole(currentPerson)}</span>
             </span>
+            <span className="expert-current-count">{activeFileNumber}</span>
           </button>
         </article>
 
-        <section className="ready-panel-roster" aria-label="Interview people">
-          <div className="ready-section-heading">
+        <section className="expert-panel-map" aria-label="Interview panel map">
+          <div className="expert-section-header">
             <div>
-              <p className="kicker">INTERVIEW PEOPLE</p>
-              <h3>Swipe roster, open files.</h3>
+              <p className="kicker">PANEL MAP</p>
+              <h3>People already in the file.</h3>
             </div>
             <span>{sourceTypeCount} source types</span>
           </div>
-          <div className="ready-person-list">
-            {visiblePeople.map((person, index) => {
-              const chips = sourceChips(person.evidenceIds, sourcesById, person).slice(0, 2);
+          <div className="expert-panel-list">
+            {panelPeople.map((person, index) => {
+              const chips = sourceChips(person.evidenceIds, sourcesById, person).slice(0, 1);
               return (
-                <button
-                  className={index === currentIndex ? "ready-person-row active" : "ready-person-row"}
+                <article
+                  className={index === currentIndex ? "expert-person-row active" : "expert-person-row"}
                   key={person.id}
-                  type="button"
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    setView("deck");
-                    setIsRevealed(false);
-                  }}
+                  aria-current={index === currentIndex ? "true" : undefined}
                 >
-                  <span className={person.profilePhotoUrl ? "ready-mini-avatar has-photo" : "ready-mini-avatar"}>
+                  <span className={person.profilePhotoUrl ? "expert-mini-avatar has-photo" : "expert-mini-avatar"}>
                     {person.profilePhotoUrl ? (
                       <img src={person.profilePhotoUrl} alt={`${person.name} user-provided profile`} />
                     ) : (
@@ -2415,35 +2417,62 @@ function App() {
                     <small>{displayRole(person)}</small>
                   </span>
                   <SourceChips chips={chips} compact />
-                </button>
+                </article>
               );
             })}
           </div>
         </section>
 
-        <article className="ready-focus-panel" aria-label="Study focus">
-          <div className="ready-section-heading">
+        <article className="expert-room-panel" aria-label="Study focus">
+          <div className="expert-section-header">
             <div>
               <p className="kicker">ROOM STRATEGY</p>
-              <h3>Keep the prep tight.</h3>
+              <h3>What to hold in mind.</h3>
             </div>
             <span>{verifiedEvidenceCount} verified records</span>
           </div>
-          <ol>
-            <li>
-              <strong>Know each person.</strong>
-              <span>Role, function in the process, and what they likely care about.</span>
-            </li>
-            <li>
-              <strong>Anchor to alignment.</strong>
-              <span>Emphasize communication rhythm, cross-market clarity, and practical execution.</span>
-            </li>
-            <li>
-              <strong>Reveal only when studying.</strong>
-              <span>Use the card deck as a rehearsal surface, not a crowded dashboard.</span>
-            </li>
-          </ol>
+          <div className="expert-focus-stack">
+            <section>
+              <span>01</span>
+              <div>
+                <strong>Panel before prompts.</strong>
+                <p>Start with names, roles, and decision function so every answer has a listener in mind.</p>
+              </div>
+            </section>
+            <section>
+              <span>02</span>
+              <div>
+                <strong>Alignment is the through-line.</strong>
+                <p>Frame the work around clarity, cross-market rhythm, operational follow-through, and trust.</p>
+              </div>
+            </section>
+            <section>
+              <span>03</span>
+              <div>
+                <strong>Reveal for rehearsal.</strong>
+                <p>Keep this screen calm; use Cards for the detailed file, evidence, and answer angles.</p>
+              </div>
+            </section>
+          </div>
         </article>
+
+        <section className="expert-priority-strip" aria-label="Priority people">
+          {focusPeople.map((person, index) => (
+            <button
+              key={person.id}
+              type="button"
+              className={index === currentIndex ? "active" : ""}
+              onClick={() => {
+                setCurrentIndex(index);
+                setView("deck");
+                setIsRevealed(false);
+              }}
+            >
+              <span>{person.initials}</span>
+              <strong>{person.name.split(" ")[0]}</strong>
+            </button>
+          ))}
+        </section>
       </section>
     );
   }
@@ -3027,7 +3056,7 @@ function App() {
   }
 
   return (
-    <main className="app-shell clinical-shell">
+    <main className="app-shell clinical-shell" data-view={view}>
       <div className="scanline-overlay" aria-hidden="true" />
       <div className="liquid-video-backdrop" aria-hidden="true">
         <video
