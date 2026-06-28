@@ -1957,7 +1957,7 @@ function App() {
                     ref={dossierCarouselRef}
                     onScroll={onDossierCarouselScroll}
                   >
-                    <article className="dossier-packet-panel">
+                    <article className="dossier-packet-panel identity-panel">
                       <span>Identity</span>
                       <h3>Role and function</h3>
                       <div className="status-grid dossier-status-grid">
@@ -1972,15 +1972,31 @@ function App() {
                           <small>{statusLabel(currentPerson.profileStatus)}</small>
                         </div>
                       </div>
-                      <SourceChips chips={currentChips} compact />
                       <div className="identity-prep-notes">
                         <span>Why this matters</span>
                         <p>{currentPerson.whyTheyMatter}</p>
-                        <ul>
-                          {currentPerson.likelyCaresAbout.slice(0, 3).map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
+                        <div className="identity-prep-grid">
+                          <section className="identity-prep-group">
+                            <strong>Listen for</strong>
+                            <ul>
+                              {currentPerson.likelyCaresAbout.slice(0, 4).map((item) => (
+                                <li key={item}>{item}</li>
+                              ))}
+                            </ul>
+                          </section>
+                          <section className="identity-prep-group">
+                            <strong>Use this angle</strong>
+                            <ul>
+                              {currentPerson.howToSpeakToThem.slice(0, 3).map((item) => (
+                                <li key={item}>{item}</li>
+                              ))}
+                            </ul>
+                          </section>
+                        </div>
+                        <section className="identity-prep-question">
+                          <span>Ask</span>
+                          <strong>{currentPerson.smartQuestion}</strong>
+                        </section>
                       </div>
                     </article>
 
