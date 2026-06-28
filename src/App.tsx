@@ -12,9 +12,9 @@ const MISSION_STORAGE_KEY = "dossier-missions-glass-v1";
 const START_STORAGE_KEY = "dossier-start-glass-v1";
 const CASE_BRIEF_STORAGE_KEY = "dossier-case-brief-glass-v1";
 const VIEW_NAV: Array<{ id: ViewMode; label: string; detail: string }> = [
-  { id: "missions", label: "Today", detail: "Brief" },
-  { id: "deck", label: "Cards", detail: "Study" },
-  { id: "roster", label: "People", detail: "Files" },
+  { id: "missions", label: "Today", detail: "Plan" },
+  { id: "deck", label: "Cards", detail: "Practice" },
+  { id: "roster", label: "People", detail: "Panel" },
 ];
 
 type MissionFlag =
@@ -279,7 +279,7 @@ function flashCardsFor(person: PersonDossier, allEvidence: SourceEvidence[]) {
   return [
     {
       id: `${person.id}-who`,
-      category: "Person File",
+      category: "Person",
       title: `Who is ${person.name}?`,
       prompt: `Who is ${person.name}?`,
       answer: `${person.name} was imported from pasted interview intel. Role data is ${displayRole(
@@ -308,10 +308,10 @@ function flashCardsFor(person: PersonDossier, allEvidence: SourceEvidence[]) {
     },
     {
       id: `${person.id}-evidence`,
-      category: "Evidence",
-      title: "Evidence trail",
-      prompt: `What evidence put ${person.name} in the dossier?`,
-      answer: sourceTitles || "Imported from pasted text. Review the source drawer before relying on this dossier.",
+      category: "Notes",
+      title: "Source trail",
+      prompt: `What notes explain why ${person.name} is in this prep set?`,
+      answer: sourceTitles || "Imported from pasted text. Review the note details before using this in the interview.",
       personId: person.id,
       evidenceIds: person.evidenceIds,
     },
@@ -537,16 +537,15 @@ function createSvgAsset(person: PersonDossier, chips: string[]) {
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
   <rect width="1200" height="1600" fill="#11130f"/>
-  <rect x="90" y="80" width="1020" height="1440" rx="34" fill="#e3d6a7" stroke="#1f2118" stroke-width="8"/>
-  <rect x="170" y="160" width="860" height="120" fill="none" stroke="#1f2118" stroke-width="4"/>
-  <text x="600" y="237" font-family="Arial, sans-serif" font-size="62" text-anchor="middle" fill="#1f2118" font-weight="700">DOSSIER</text>
-  <text x="600" y="360" font-family="Arial, sans-serif" font-size="92" text-anchor="middle" fill="#1f2118" font-weight="700">${esc(person.name)}</text>
-  <circle cx="600" cy="545" r="120" fill="#1f2118"/>
-  <text x="600" y="580" font-family="Arial, sans-serif" font-size="88" text-anchor="middle" fill="#e3d6a7" font-weight="700">${esc(person.initials)}</text>
-  <g transform="translate(250 700) rotate(-10)">
-    <rect x="0" y="0" width="700" height="115" fill="none" stroke="#b3352b" stroke-width="10"/>
-    <text x="350" y="78" font-family="Arial, sans-serif" font-size="58" text-anchor="middle" fill="#b3352b" font-weight="700">CONFIDENTIAL</text>
-  </g>
+  <rect width="1200" height="1600" fill="#f7f3ea"/>
+  <rect x="90" y="80" width="1020" height="1440" rx="48" fill="#fffdf7" stroke="#d7dfd0" stroke-width="6"/>
+  <rect x="170" y="160" width="860" height="120" rx="60" fill="#d9e7d5"/>
+  <text x="600" y="237" font-family="Arial, sans-serif" font-size="54" text-anchor="middle" fill="#27666a" font-weight="800">PREP ROOM</text>
+  <text x="600" y="360" font-family="Arial, sans-serif" font-size="92" text-anchor="middle" fill="#17201c" font-weight="800">${esc(person.name)}</text>
+  <circle cx="600" cy="545" r="124" fill="#27666a"/>
+  <text x="600" y="580" font-family="Arial, sans-serif" font-size="88" text-anchor="middle" fill="#fffdf7" font-weight="800">${esc(person.initials)}</text>
+  <rect x="250" y="695" width="700" height="115" rx="58" fill="#f0eadb" stroke="#d7dfd0" stroke-width="4"/>
+  <text x="600" y="767" font-family="Arial, sans-serif" font-size="48" text-anchor="middle" fill="#33423c" font-weight="800">INTERVIEW PREP</text>
   ${wrapped
     .slice(0, 13)
     .map(
@@ -574,7 +573,7 @@ function createSvgAsset(person: PersonDossier, chips: string[]) {
   const url = URL.createObjectURL(blob);
   return {
     url,
-    filename: `${person.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-dossier-card.svg`,
+    filename: `${person.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-prep-card.svg`,
     label: `${person.initials} SVG ready`,
   };
 }
@@ -612,18 +611,18 @@ function EvidenceDrawer({
 
   return (
     <div className="drawer-backdrop" role="presentation" onClick={onClose}>
-      <aside className="evidence-drawer" role="dialog" aria-modal="true" aria-label="Evidence drawer" onClick={(event) => event.stopPropagation()}>
+      <aside className="evidence-drawer" role="dialog" aria-modal="true" aria-label="Source notes" onClick={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
             <p className="kicker">SOURCE TRAIL</p>
             <h2>{person.name}</h2>
           </div>
-          <button className="icon-button" type="button" aria-label="Close Evidence" onClick={onClose}>
+          <button className="icon-button" type="button" aria-label="Close source notes" onClick={onClose}>
             X
           </button>
         </div>
         <div className="stamp-row" aria-hidden="true">
-          CONFIDENTIAL
+          REVIEW NOTES
         </div>
         <div className="source-list">
           {sources.map((source) => (
@@ -1531,7 +1530,7 @@ function App() {
     if (!combinedIntel) {
       setCaseBrief((previous) => ({
         ...previous,
-        intakeStatus: "Add the recruiter message, interview time, role, people, or prep materials before building the mission.",
+        intakeStatus: "Add the recruiter message, interview time, role, people, or prep materials before building the prep set.",
       }));
       return;
     }
@@ -1542,7 +1541,7 @@ function App() {
     const evidence: SourceEvidence = {
       id: evidenceId,
       type: "manual",
-      title: "First interview message and case brief",
+      title: "First interview message and prep brief",
       date: new Date().toISOString().slice(0, 10),
       excerpt: [
         roleTitle ? `Role: ${roleTitle}` : "",
@@ -1563,7 +1562,7 @@ function App() {
     setCustomEvidence((previous) => mergeEvidence(previous, [evidence]));
     setIntelText(message || combinedIntel);
     setImportResult(
-      `First-interview mission saved. Detected ${contacts.length} possible profile target${
+      `First-interview prep saved. Detected ${contacts.length} possible profile target${
         contacts.length === 1 ? "" : "s"
       }. Bring back profile screenshots through Intake.`,
     );
@@ -1610,7 +1609,7 @@ function App() {
 
   function renderCaseNav() {
     return (
-      <nav className="case-nav" aria-label="Dossier sections">
+      <nav className="case-nav" aria-label="Interview prep sections">
         {VIEW_NAV.map((item) => (
           <button
             key={item.id}
@@ -1634,11 +1633,11 @@ function App() {
     return (
       <article className={`flight-card flight-${flightCard.direction}`} aria-hidden="true">
         <div className="flight-card-inner">
-          <p className="kicker">INTELLIGENCE INFORMATION</p>
+          <p className="kicker">PRACTICE SNAPSHOT</p>
           <div className="flight-file-lines">
-            <span>File Name: {flightCard.person.name}</span>
+            <span>Person: {flightCard.person.name}</span>
             <span>Role: {displayRole(flightCard.person)}</span>
-            <span>Case No: Interview Prep</span>
+            <span>Prep set: Interview</span>
           </div>
           <div className={flightCard.person.profilePhotoUrl ? "mini-flight-portrait has-photo" : "mini-flight-portrait"}>
             {flightCard.person.profilePhotoUrl ? (
@@ -1647,8 +1646,8 @@ function App() {
               <span>{flightCard.person.initials}</span>
             )}
           </div>
-          <strong>USE CAUTION</strong>
-          <small>Source claims before using them in the room.</small>
+          <strong>CHECK THE NOTES</strong>
+          <small>Use confirmed details when you are in the room.</small>
           <SourceChips chips={chips.slice(0, 4)} compact />
         </div>
       </article>
@@ -1672,7 +1671,7 @@ function App() {
       <>
         <section className="simple-file-header" aria-label="Current file">
           <div>
-            <p className="kicker">PERSON FILE</p>
+            <p className="kicker">PERSON</p>
             <h2>{currentPerson.name}</h2>
             <span>
               {String(currentIndex + 1).padStart(2, "0")} / {String(people.length).padStart(2, "0")} ·{" "}
@@ -1681,10 +1680,10 @@ function App() {
           </div>
         </section>
 
-        <section className="case-status-panel" aria-label="Active dossier status">
+        <section className="case-status-panel" aria-label="Active person status">
           <div className="case-status-top">
             <div>
-              <p className="kicker">ACTIVE PERSON FILE</p>
+              <p className="kicker">CURRENT PERSON</p>
               <h2>{currentPerson.name}</h2>
               <span>{currentPerson.functionInInterview}</span>
             </div>
@@ -1700,7 +1699,7 @@ function App() {
           </div>
           <div className="case-metrics">
             <div>
-              <span>Evidence</span>
+              <span>Notes</span>
               <strong>{currentSources.length}</strong>
               <small>{currentSourceTypeCount} source type{currentSourceTypeCount === 1 ? "" : "s"}</small>
             </div>
@@ -1710,7 +1709,7 @@ function App() {
               <small>{roleConfidence(currentPerson)}</small>
             </div>
             <div>
-              <span>Deck Health</span>
+              <span>Coverage</span>
               <strong>{sourcedPersonCount}/{people.length}</strong>
               <small>{pendingProfileCount} profile pending</small>
             </div>
@@ -1792,14 +1791,14 @@ function App() {
                 <div className="file-tab">{currentPerson.initials}</div>
                 <div className="reticle" aria-hidden="true" />
                 <div className="confidential-stamp" aria-hidden="true">
-                  CONFIDENTIAL
+                  READY
                 </div>
-                <p className="kicker">PERSON FILE</p>
+                <p className="kicker">PERSON</p>
                 <div className="intel-file-head">
-                  <strong>INTELLIGENCE INFORMATION</strong>
-                  <span>File Name: {currentPerson.name}</span>
-                  <span>Case No: Interview Prep</span>
-                  <span>Source Status: {roleConfidence(currentPerson)}</span>
+                  <strong>Review details</strong>
+                  <span>Person: {currentPerson.name}</span>
+                  <span>Prep set: Interview</span>
+                  <span>Status: {roleConfidence(currentPerson)}</span>
                 </div>
                 <div className={currentPerson.profilePhotoUrl ? "portrait-frame has-photo" : "portrait-frame"}>
                   {currentPerson.profilePhotoUrl ? (
@@ -1815,19 +1814,19 @@ function App() {
                   <strong>{displayRole(currentPerson)}</strong>
                   <small>{roleConfidence(currentPerson)}</small>
                 </div>
-                <p className="prompt-line">Tap Reveal for the full interview file.</p>
+                <p className="prompt-line">Tap Reveal for the practice notes.</p>
                 <SourceChips chips={currentChips} />
               </div>
 
               <div className="card-face card-back">
                 <div className="file-tab">{currentPerson.initials}</div>
-                <p className="kicker">REVEALED FILE</p>
+                <p className="kicker">PRACTICE NOTES</p>
                 <h2>{currentPerson.name}</h2>
                 <p className="email-line">{currentPerson.email ?? "Email pending"}</p>
 
                 <section
                   className="dossier-packet-shell"
-                  aria-label={`${currentPerson.name} swipeable dossier packet`}
+                  aria-label={`${currentPerson.name} swipeable prep cards`}
                   onPointerDown={(event) => event.stopPropagation()}
                   onPointerMove={(event) => event.stopPropagation()}
                   onPointerUp={(event) => event.stopPropagation()}
@@ -1837,14 +1836,14 @@ function App() {
                     <div>
                       <button
                         type="button"
-                        aria-label="Previous dossier panel"
+                        aria-label="Previous prep card"
                         onClick={() => scrollDossierPanel(dossierPanelIndex - 1)}
                       >
                         Previous
                       </button>
                       <button
                         type="button"
-                        aria-label="Next dossier panel"
+                        aria-label="Next prep card"
                         onClick={() => scrollDossierPanel(dossierPanelIndex + 1)}
                       >
                         Next
@@ -1901,14 +1900,14 @@ function App() {
                         aria-label={`${currentPerson.name} profile packet files`}
                       >
                         <div className="profile-file-stack-top">
-                          <span>Profile packet</span>
-                          <strong>{currentProfilePacketSources.length} files</strong>
+                          <span>Profile notes</span>
+                          <strong>{currentProfilePacketSources.length} items</strong>
                         </div>
                         <div className="profile-file-grid">
                           {currentProfilePacketSources.map((source, index) => (
                             <article className="profile-file-slip" key={source.id}>
                               <div className="profile-file-slip-top">
-                                <span>FILE {String(index + 1).padStart(2, "0")}</span>
+                                <span>ITEM {String(index + 1).padStart(2, "0")}</span>
                                 <small>{sourceTypeLabel(source.type)}</small>
                               </div>
                               <h3>{source.title.replace(/^User-provided LinkedIn screenshot: /, "")}</h3>
@@ -1998,7 +1997,7 @@ function App() {
                     ) : null}
                   </div>
 
-                  <nav className="dossier-panel-pips" aria-label="Dossier packet panels">
+                  <nav className="dossier-panel-pips" aria-label="Prep card panels">
                     {dossierPanelLabels.map((label, index) => (
                       <button
                         key={`${label}-${index}`}
@@ -2027,8 +2026,8 @@ function App() {
       <section className="roster-view">
         <div className="view-header">
           <div>
-            <p className="kicker">DOSSIER INDEX</p>
-            <h2>Interview file roster</h2>
+            <p className="kicker">PEOPLE</p>
+            <h2>People in the room</h2>
           </div>
         </div>
 
@@ -2098,7 +2097,7 @@ function App() {
             Previous
           </button>
           <button className="primary-action" type="button" onClick={() => openRosterCard(currentIndex)}>
-            Open File
+            Open
           </button>
           <button type="button" onClick={goNext}>
             Next
@@ -2191,10 +2190,10 @@ function App() {
       <section className="start-gate" aria-label="Open interview case file">
         <article className="start-folder">
           <div className="start-folder-tab" aria-hidden="true">
-            NEW CASE
+            NEW PREP
           </div>
-          <p className="kicker">FIRST INTERVIEW RECEIVED</p>
-          <h2>Open the prep file.</h2>
+          <p className="kicker">INTERVIEW RECEIVED</p>
+          <h2>Set up the conversation.</h2>
           <p>
             Start with the invite, the people named, the role, the date, and any material you were sent.
           </p>
@@ -2207,14 +2206,14 @@ function App() {
             <span>Website and news scan</span>
           </div>
           <button className="start-tap-button" type="button" onClick={openCaseFile}>
-            Start Case File
+            Start Prep
           </button>
         </article>
         <aside className="start-brief">
-          <span>MISSION ORDER</span>
+          <span>WHAT TO COLLECT</span>
           <p>
-            Bring back profile screenshots, PDFs, notes, and public material you are allowed to keep. Every claim keeps a
-            visible source.
+            Bring back profile screenshots, PDFs, notes, and public material you are allowed to keep. Every claim keeps
+            a visible source.
           </p>
         </aside>
       </section>
@@ -2232,7 +2231,7 @@ function App() {
           <span>Local only</span>
         </div>
         <p>
-          Paste the first recruiter message or invite, then fill any missing blanks. This creates the mission brief and
+          Paste the first recruiter message or invite, then fill any missing blanks. This creates the prep brief and
           tells you what screenshots, docs, and profile evidence to collect next.
         </p>
         <div className="case-form-grid">
@@ -2295,7 +2294,7 @@ function App() {
         </div>
         <div className="case-form-actions">
           <button className="primary-action" type="button" onClick={buildMissionBrief}>
-            Build Mission
+            Build Prep
           </button>
           <button type="button" onClick={() => setView("import")}>
             Attach Evidence
@@ -2316,18 +2315,18 @@ function App() {
 
     return (
       <section className="missions-view expert-home">
-        <article className="expert-command-panel" aria-label="Upcoming interview command brief">
+        <article className="expert-command-panel" aria-label="Upcoming interview prep brief">
           <div className="expert-command-topline">
-            <span>Final manager interview</span>
-            <span>Private dossier</span>
+            <span>Upcoming conversation</span>
+            <span>Panel ready</span>
           </div>
           <div className="expert-command-main">
             <div>
-              <p className="kicker">UPCOMING INTERVIEW</p>
-              <h2>Panel brief, ready.</h2>
+              <p className="kicker">INTERVIEW PREP</p>
+              <h2>Walk in ready.</h2>
               <p>
-                People, recruiter context, profile evidence, and answer angles are staged for the interview. Study the
-                panel first; reveal the deeper file only when rehearsing.
+                Your people, notes, priorities, and practice cards are organized for the next conversation. Start with
+                who is in the room, then rehearse the points you want to land.
               </p>
             </div>
             <div className="expert-signal-lens" aria-hidden="true">
@@ -2344,26 +2343,26 @@ function App() {
                 setIsRevealed(false);
               }}
             >
-              Study Panel
+              Start Practice
             </button>
-            <dl className="expert-metric-strip" aria-label="Loaded dossier summary">
+            <dl className="expert-metric-strip" aria-label="Loaded prep summary">
               <div>
                 <dt>People</dt>
                 <dd>{people.length}</dd>
               </div>
               <div>
-                <dt>Verified</dt>
+                <dt>Ready</dt>
                 <dd>{verifiedPeopleCount}</dd>
               </div>
               <div>
-                <dt>Sources</dt>
+                <dt>Notes</dt>
                 <dd>{allEvidence.length}</dd>
               </div>
             </dl>
           </div>
         </article>
 
-        <article className="expert-current-file" aria-label="Current person file">
+        <article className="expert-current-file" aria-label="Current person to review">
           <button
             className="expert-current-file-button"
             type="button"
@@ -2391,10 +2390,10 @@ function App() {
         <section className="expert-panel-map" aria-label="Interview panel map">
           <div className="expert-section-header">
             <div>
-              <p className="kicker">PANEL MAP</p>
-              <h3>People already in the file.</h3>
+              <p className="kicker">PANEL</p>
+              <h3>People in the room.</h3>
             </div>
-            <span>{sourceTypeCount} source types</span>
+            <span>{sourceTypeCount} note types</span>
           </div>
           <div className="expert-panel-list">
             {panelPeople.map((person, index) => {
@@ -2426,31 +2425,31 @@ function App() {
         <article className="expert-room-panel" aria-label="Study focus">
           <div className="expert-section-header">
             <div>
-              <p className="kicker">ROOM STRATEGY</p>
-              <h3>What to hold in mind.</h3>
+              <p className="kicker">FOCUS</p>
+              <h3>Conversation priorities.</h3>
             </div>
-            <span>{verifiedEvidenceCount} verified records</span>
+            <span>{verifiedEvidenceCount} confirmed notes</span>
           </div>
           <div className="expert-focus-stack">
             <section>
               <span>01</span>
               <div>
-                <strong>Panel before prompts.</strong>
-                <p>Start with names, roles, and decision function so every answer has a listener in mind.</p>
+                <strong>Know who is listening.</strong>
+                <p>Start with names, roles, and what each person likely cares about.</p>
               </div>
             </section>
             <section>
               <span>02</span>
               <div>
-                <strong>Alignment is the through-line.</strong>
-                <p>Frame the work around clarity, cross-market rhythm, operational follow-through, and trust.</p>
+                <strong>Make alignment concrete.</strong>
+                <p>Connect your examples to clarity, follow-through, trust, and practical outcomes.</p>
               </div>
             </section>
             <section>
               <span>03</span>
               <div>
-                <strong>Reveal for rehearsal.</strong>
-                <p>Keep this screen calm; use Cards for the detailed file, evidence, and answer angles.</p>
+                <strong>Practice, then simplify.</strong>
+                <p>Use Cards to rehearse, then carry only the strongest points into the conversation.</p>
               </div>
             </section>
           </div>
@@ -2509,19 +2508,19 @@ function App() {
       <section className="missions-view">
         <div className="view-header">
           <div>
-            <p className="kicker">CASE ASSIGNMENTS</p>
-            <h2>Interview case file</h2>
+            <p className="kicker">TODAY</p>
+            <h2>Interview prep</h2>
           </div>
           <button type="button" onClick={() => setView("deck")}>
-            Open Files
+            Practice
           </button>
         </div>
 
         {renderFirstInterviewIntake()}
 
-        <article className="simple-mission-brief" aria-label="Mission summary">
+        <article className="simple-mission-brief" aria-label="Prep summary">
           <div className="simple-mission-top">
-            <p className="kicker">MISSION PATH</p>
+            <p className="kicker">PREP PATH</p>
             <strong>{missionTotal}/{missionMax} checks logged</strong>
           </div>
           <ol>
@@ -2535,21 +2534,21 @@ function App() {
             <li>
               <span>02</span>
               <div>
-                <strong>Bring back evidence.</strong>
+                <strong>Add supporting notes.</strong>
                 <p>Upload profile screenshots, pre-reads, PDFs, and notes you are allowed to keep.</p>
               </div>
             </li>
             <li>
               <span>03</span>
               <div>
-                <strong>Study the file.</strong>
+                <strong>Practice the conversation.</strong>
                 <p>Use the deck to rehearse who matters, what to emphasize, and what to ask.</p>
               </div>
             </li>
           </ol>
           <div className="simple-file-actions">
             <button type="button" onClick={() => setView("import")}>
-              Attach Evidence
+              Attach Notes
             </button>
             <button type="button" onClick={() => setView("briefing")}>
               Pre-Read
@@ -2565,11 +2564,11 @@ function App() {
 
         <article className="mission-command">
           <div>
-            <p className="kicker">CASE LEDGER</p>
-            <h3>Evidence to collect</h3>
+            <p className="kicker">PREP LEDGER</p>
+            <h3>What to collect</h3>
             <p>
-              Build the file from evidence you are allowed to keep: profile screenshots, PDFs, pre-reads, interview
-              notes, and transcripts. Each item is logged before it becomes a study card.
+              Build the prep set from material you are allowed to keep: profile screenshots, PDFs, pre-reads,
+              interview notes, and transcripts. Each item is logged before it becomes a study card.
             </p>
           </div>
           <div className="mission-dial" aria-label={`Case progress ${missionPercent}%`}>
@@ -2612,24 +2611,24 @@ function App() {
             )}
           </div>
           <div className="target-copy">
-            <p className="kicker">ACTIVE TARGET FILE</p>
+            <p className="kicker">CURRENT PERSON</p>
             <h3>{currentPerson.name}</h3>
             <p>{displayRole(currentPerson)}</p>
             <SourceChips chips={currentChips} compact />
           </div>
           <div className="target-actions">
             <button type="button" onClick={() => setView("deck")}>
-              Open Card
+              Practice
             </button>
             <button type="button" onClick={goNext}>
-              Next Target
+              Next Person
             </button>
           </div>
         </article>
 
-        <div className="field-summary-strip" aria-label="Dossier field summary">
-          <span>{people.length} files</span>
-          <span>{allEvidence.length} evidence cards</span>
+        <div className="field-summary-strip" aria-label="Prep summary">
+          <span>{people.length} people</span>
+          <span>{allEvidence.length} source notes</span>
           <span>{pendingProfileCount} pending profiles</span>
           <span>{pendingNames || "profiles tracked"}</span>
         </div>
@@ -2637,8 +2636,8 @@ function App() {
         <div className="mission-grid">
           <article className="mission-card">
             <div className="mission-card-top">
-              <span>ASSIGNMENT 01</span>
-              <strong>Profile recon</strong>
+              <span>STEP 01</span>
+              <strong>Profile check</strong>
               <small>{profileProgress}/4</small>
             </div>
             <p>
@@ -2676,7 +2675,7 @@ function App() {
                   checked={missionState.profileEvidenceAttached}
                   onChange={(event) => updateMissionFlag("profileEvidenceAttached", event.target.checked)}
                 />
-                <span>Attach screenshots through Intake as USER PROVIDED evidence</span>
+                <span>Attach screenshots through Intake as user-provided notes</span>
               </label>
             </div>
             <div className="mission-actions">
@@ -2684,20 +2683,20 @@ function App() {
                 Attach Screenshots
               </button>
               <button type="button" onClick={() => setView("roster")}>
-                Pick Target
+                Pick Person
               </button>
             </div>
           </article>
 
           <article className="mission-card">
             <div className="mission-card-top">
-              <span>ASSIGNMENT 02</span>
-              <strong>Document sweep</strong>
+              <span>STEP 02</span>
+              <strong>Document review</strong>
               <small>{documentProgress}/4</small>
             </div>
             <p>
               Pull in PDFs, pre-reads, calendar attachments, and email-linked files. Treat each slide, metric, org
-              chart, and unclear claim as evidence before it becomes a card.
+              chart, and unclear claim as a note before it becomes a card.
             </p>
             <div className="mission-checklist">
               <label>
@@ -2745,7 +2744,7 @@ function App() {
 
           <article className="mission-card risky-mission">
             <div className="mission-card-top">
-              <span>ASSIGNMENT 03</span>
+              <span>STEP 03</span>
               <strong>Interview debrief</strong>
               <small>{debriefProgress}/4</small>
             </div>
@@ -2810,7 +2809,7 @@ function App() {
               </button>
             </div>
             <button className="reset-missions-button" type="button" onClick={resetMissions}>
-              Reset Casework
+              Reset Prep
             </button>
             <output className="debrief-status">{missionState.debriefStatus}</output>
             {missionState.debriefSummary.length ? (
@@ -2832,7 +2831,7 @@ function App() {
                   </ul>
                 </section>
                 <section>
-                  <h3>Next-file updates</h3>
+                  <h3>Next updates</h3>
                   <ul>
                     {missionState.debriefFollowUps.map((item) => (
                       <li key={item}>{item}</li>
@@ -2853,7 +2852,7 @@ function App() {
         <div className="view-header">
           <div>
             <p className="kicker">SOURCE METADATA</p>
-            <h2>How this dossier was shaped</h2>
+            <h2>How this prep set was shaped</h2>
           </div>
           <button type="button" onClick={() => setView("deck")}>
             Back to Deck
@@ -3042,7 +3041,7 @@ function App() {
         </div>
 
         <div className="imported-strip">
-          <p className="kicker">LOCAL DOSSIERS</p>
+          <p className="kicker">LOCAL PEOPLE</p>
           <div className="imported-list">
             {people.map((person) => (
               <span key={person.id}>
@@ -3083,11 +3082,11 @@ function App() {
       </div>
       <header className="app-header">
         <div>
-          <p className="kicker">PRIVATE INTERVIEW PREP</p>
-          <h1>Dossier</h1>
+          <p className="kicker">INTERVIEW PREP</p>
+          <h1>Prep Room</h1>
         </div>
-        <div className="system-light" aria-label="Dossier mark">
-          Private
+        <div className="system-light" aria-label="Prep status">
+          Ready
         </div>
       </header>
 

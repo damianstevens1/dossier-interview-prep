@@ -32,7 +32,7 @@ export type PersonDossier = {
 
 export type FlashCard = {
   id: string;
-  category: "Person File" | "Evidence" | "Strategy" | "Likely Question" | "Answer Angle";
+  category: "Person" | "Person File" | "Notes" | "Evidence" | "Strategy" | "Likely Question" | "Answer Angle";
   title: string;
   prompt: string;
   answer: string;

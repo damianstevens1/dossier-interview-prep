@@ -5016,6 +5016,1310 @@ body {
   mix-blend-mode: multiply;
 }
 
+/* Prep Room redesign: human interview workspace, no spy/dossier styling. */
+:root {
+  color-scheme: light;
+  --prep-ink: #17201c;
+  --prep-ink-soft: #33423c;
+  --prep-muted: #6c766f;
+  --prep-bg: #f7f3ea;
+  --prep-bg-2: #ecefe4;
+  --prep-paper: #fffdf7;
+  --prep-paper-2: #f3f6ee;
+  --prep-teal: #27666a;
+  --prep-teal-dark: #17464b;
+  --prep-sage: #d9e7d5;
+  --prep-sage-2: #b8d2c0;
+  --prep-clay: #c97755;
+  --prep-lilac: #d9d1ef;
+  --prep-blue: #d6e9ee;
+  --prep-line: rgba(39, 60, 53, 0.13);
+  --prep-line-strong: rgba(39, 60, 53, 0.22);
+  --prep-shadow: 0 18px 46px rgba(48, 64, 55, 0.13);
+  --prep-shadow-soft: 0 10px 28px rgba(48, 64, 55, 0.09);
+  --prep-radius: 24px;
+  --prep-radius-sm: 16px;
+  --prep-radius-lg: 34px;
+}
+
+html,
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 12% -6%, rgba(217, 231, 213, 0.86), transparent 20rem),
+    radial-gradient(circle at 98% 8%, rgba(214, 233, 238, 0.92), transparent 18rem),
+    linear-gradient(180deg, var(--prep-bg) 0%, #f4f7ef 54%, var(--prep-bg-2) 100%) !important;
+  color: var(--prep-ink);
+}
+
+body {
+  overflow-y: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+.app-shell.clinical-shell {
+  width: min(100%, 560px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(1rem, env(safe-area-inset-top)) clamp(1rem, 4vw, 1.35rem)
+    max(2rem, env(safe-area-inset-bottom)) !important;
+  overflow-x: hidden;
+  color: var(--prep-ink) !important;
+  background:
+    linear-gradient(150deg, rgba(255, 253, 247, 0.86), rgba(255, 253, 247, 0.18) 44%, rgba(217, 231, 213, 0.4)),
+    radial-gradient(circle at 0% 22%, rgba(201, 119, 85, 0.13), transparent 15rem),
+    transparent !important;
+}
+
+.app-shell.clinical-shell::before,
+.app-shell.clinical-shell::after,
+.clinical-shell .scanline-overlay,
+.clinical-shell .liquid-video-backdrop,
+.clinical-shell .reticle,
+.clinical-shell .confidential-stamp,
+.clinical-shell .file-tab,
+.clinical-shell .mini-tab,
+.clinical-shell .start-folder-tab {
+  display: none !important;
+  content: none !important;
+}
+
+.clinical-shell *,
+.clinical-shell *::before,
+.clinical-shell *::after {
+  text-shadow: none !important;
+}
+
+.clinical-shell .app-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.45rem 0 1.1rem !important;
+  padding: 0 !important;
+}
+
+.clinical-shell .kicker {
+  margin: 0;
+  color: var(--prep-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 850;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+}
+
+.clinical-shell .app-header h1 {
+  margin: 0.08rem 0 0 !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(2.78rem, 13vw, 4.3rem) !important;
+  font-weight: 900 !important;
+  line-height: 0.88 !important;
+  letter-spacing: 0 !important;
+}
+
+.clinical-shell .system-light {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(39, 102, 106, 0.18);
+  border-radius: 999px;
+  color: var(--prep-teal-dark) !important;
+  background: var(--prep-sage) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.clinical-shell .case-nav {
+  position: sticky;
+  top: max(0.5rem, env(safe-area-inset-top));
+  z-index: 20;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.38rem !important;
+  margin: 0 0 1rem !important;
+  padding: 0.38rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.9) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.clinical-shell .case-nav button,
+.clinical-shell :is(.simple-card-controls button, .roster-orbit-controls button, .primary-action, .expert-study-button, .initials-rail button, .profile-status button, .dossier-packet-toolbar button, .dossier-panel-pips button) {
+  min-height: 44px !important;
+  min-width: 0;
+  border: 1px solid transparent !important;
+  outline: 0 !important;
+  border-radius: 999px !important;
+  color: var(--prep-ink-soft) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-weight: 850;
+}
+
+.clinical-shell .case-nav button span {
+  color: inherit !important;
+  font-size: 0.95rem !important;
+  line-height: 1;
+}
+
+.clinical-shell .case-nav button small {
+  display: block !important;
+  margin-top: 0.18rem;
+  color: currentColor !important;
+  font-size: 0.61rem !important;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  opacity: 0.64;
+  text-transform: uppercase;
+}
+
+.clinical-shell .case-nav button.active,
+.clinical-shell :is(.primary-action, .expert-study-button),
+.clinical-shell .roster-orbit-controls .primary-action,
+.clinical-shell .profile-status button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+  box-shadow: 0 12px 22px rgba(39, 102, 106, 0.22) !important;
+}
+
+.clinical-shell :is(button:hover, button:active) {
+  filter: none !important;
+}
+
+.clinical-shell button:active {
+  transform: translateY(1px);
+}
+
+.clinical-shell[data-view="missions"] {
+  background: transparent !important;
+}
+
+.clinical-shell[data-view="missions"]::before {
+  display: none !important;
+  content: none !important;
+}
+
+.expert-home {
+  display: grid;
+  gap: 0.9rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.expert-command-panel,
+.expert-current-file,
+.expert-panel-map,
+.expert-room-panel,
+.expert-priority-strip,
+.simple-file-header,
+.case-status-panel,
+.view-header,
+.card-face,
+.dossier-packet-panel,
+.roster-card,
+.profile-file-slip,
+.role-panel,
+.intel-file-head,
+.status-grid > div,
+.source-paper,
+.briefing-paper,
+.metadata-card,
+.import-panel,
+.evidence-drawer {
+  border: 1px solid var(--prep-line) !important;
+  outline: 0 !important;
+  border-radius: var(--prep-radius) !important;
+  color: var(--prep-ink) !important;
+  background: var(--prep-paper) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.expert-command-panel {
+  position: relative;
+  display: grid;
+  gap: 1.1rem !important;
+  overflow: hidden;
+  padding: 1.15rem !important;
+  border-radius: var(--prep-radius-lg) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 247, 0.96), rgba(243, 246, 238, 0.88)),
+    var(--prep-paper) !important;
+}
+
+.expert-command-panel::before {
+  position: absolute;
+  inset: auto -9rem -10rem auto;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 999px;
+  content: "";
+  background: rgba(217, 209, 239, 0.64);
+  pointer-events: none;
+}
+
+.expert-command-panel::after {
+  position: absolute;
+  inset: 1rem auto auto 1rem;
+  width: 4.2rem;
+  height: 0.32rem;
+  border-radius: 999px;
+  content: "";
+  background: var(--prep-clay);
+}
+
+.expert-command-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.expert-command-topline,
+.expert-command-footer,
+.expert-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.expert-command-topline {
+  padding-top: 0.58rem;
+}
+
+.expert-command-topline span,
+.expert-section-header > span,
+.expert-current-count {
+  color: var(--prep-muted) !important;
+  font-size: 0.68rem !important;
+  font-weight: 850;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+
+.expert-command-main {
+  display: block !important;
+}
+
+.expert-command-main h2 {
+  max-width: 8.4ch;
+  margin: 0.22rem 0 0.8rem !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(3.2rem, 17vw, 5.15rem) !important;
+  font-weight: 950;
+  line-height: 0.84 !important;
+  letter-spacing: 0 !important;
+}
+
+.expert-command-main p {
+  max-width: 30rem;
+  margin: 0 !important;
+  color: var(--prep-ink-soft) !important;
+  font-size: 1.02rem !important;
+  line-height: 1.45 !important;
+}
+
+.expert-signal-lens {
+  display: none !important;
+}
+
+.expert-command-footer {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+}
+
+.expert-study-button {
+  width: 100%;
+  min-height: 54px !important;
+  font-size: 1rem;
+}
+
+.expert-metric-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem !important;
+  margin: 0;
+}
+
+.expert-metric-strip div {
+  min-width: 0;
+  padding: 0.72rem 0.68rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 253, 247, 0.76) !important;
+}
+
+.expert-metric-strip dt {
+  color: var(--prep-muted) !important;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.expert-metric-strip dd {
+  margin: 0.18rem 0 0;
+  color: var(--prep-ink);
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.expert-current-file {
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, var(--prep-teal-dark), var(--prep-teal)) !important;
+  box-shadow: 0 18px 42px rgba(23, 70, 75, 0.22) !important;
+}
+
+.clinical-shell .expert-current-file-button {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+  min-height: 104px;
+  padding: 0.95rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #fffdf7 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: left;
+}
+
+.expert-current-avatar,
+.expert-mini-avatar,
+.portrait-frame,
+.mini-portrait,
+.mini-flight-portrait {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 999px !important;
+  background: var(--prep-sage) !important;
+  color: var(--prep-teal-dark) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  font-weight: 900;
+}
+
+.expert-current-avatar {
+  width: 64px;
+  height: 64px;
+  border: 2px solid rgba(255, 253, 247, 0.88) !important;
+}
+
+.expert-mini-avatar {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--prep-line) !important;
+}
+
+.expert-current-avatar img,
+.expert-mini-avatar img,
+.portrait-frame img,
+.mini-portrait img,
+.mini-flight-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: none !important;
+}
+
+.expert-current-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.18rem;
+}
+
+.expert-current-copy small,
+.expert-current-copy span,
+.expert-current-count {
+  color: rgba(255, 253, 247, 0.78) !important;
+}
+
+.expert-current-copy strong {
+  overflow: hidden;
+  color: #fffdf7 !important;
+  font-size: clamp(1.32rem, 6.6vw, 1.9rem);
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expert-panel-map,
+.expert-room-panel,
+.expert-priority-strip {
+  padding: 1rem !important;
+}
+
+.expert-section-header {
+  align-items: flex-start;
+  margin-bottom: 0.78rem !important;
+}
+
+.expert-section-header h3 {
+  margin: 0.14rem 0 0 !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(1.55rem, 7vw, 2.2rem) !important;
+  font-weight: 920;
+  line-height: 0.98 !important;
+  letter-spacing: 0 !important;
+}
+
+.expert-panel-list {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 253, 247, 0.72) !important;
+}
+
+.expert-person-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.72rem;
+  align-items: center;
+  min-height: 70px;
+  padding: 0.72rem !important;
+  border-top: 1px solid var(--prep-line) !important;
+  background: transparent !important;
+}
+
+.expert-person-row:first-child {
+  border-top: 0 !important;
+}
+
+.expert-person-row.active {
+  background: var(--prep-sage) !important;
+}
+
+.expert-person-row strong,
+.roster-card strong,
+.card-face h2,
+.case-status-panel h2,
+.simple-file-header h2,
+.view-header h2,
+.dossier-packet-panel h3 {
+  color: var(--prep-ink) !important;
+  letter-spacing: 0 !important;
+}
+
+.expert-person-row small,
+.roster-card small,
+.email-line,
+.prompt-line,
+.dossier-packet-panel p,
+.dossier-packet-panel li,
+.role-panel small,
+.status-grid small,
+.case-metrics small {
+  color: var(--prep-ink-soft) !important;
+}
+
+.expert-person-row .source-chips {
+  grid-column: 2;
+}
+
+.expert-focus-stack {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.expert-focus-stack section {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.88rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  background: var(--prep-paper-2) !important;
+}
+
+.expert-focus-stack section > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--prep-teal-dark) !important;
+  background: var(--prep-sage);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.expert-focus-stack strong {
+  color: var(--prep-ink) !important;
+  font-size: 1rem;
+}
+
+.expert-focus-stack p {
+  margin: 0.24rem 0 0;
+  color: var(--prep-ink-soft) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.36 !important;
+}
+
+.expert-priority-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.48rem !important;
+}
+
+.clinical-shell .expert-priority-strip button {
+  display: grid !important;
+  min-height: 78px !important;
+  place-items: center;
+  padding: 0.55rem 0.35rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  color: var(--prep-ink-soft) !important;
+  background: var(--prep-paper-2) !important;
+}
+
+.clinical-shell .expert-priority-strip button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+}
+
+.simple-file-header,
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.85rem !important;
+  padding: 1rem !important;
+}
+
+.simple-file-header h2,
+.view-header h2,
+.case-status-panel h2 {
+  margin: 0.16rem 0 0 !important;
+  font-size: clamp(1.65rem, 8vw, 2.4rem) !important;
+  line-height: 0.96 !important;
+}
+
+.simple-file-header span {
+  color: var(--prep-muted) !important;
+  font-size: 0.84rem;
+}
+
+.case-status-panel {
+  display: none !important;
+}
+
+.initials-rail {
+  display: flex !important;
+  gap: 0.48rem !important;
+  overflow-x: auto;
+  margin: 0 -0.2rem 0.72rem !important;
+  padding: 0.1rem 0.2rem 0.55rem !important;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.initials-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.initials-rail button {
+  flex: 0 0 48px;
+  width: 48px;
+  min-height: 48px !important;
+  scroll-snap-align: center;
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper) !important;
+}
+
+.initials-rail button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+}
+
+.simple-card-controls {
+  position: sticky !important;
+  top: auto !important;
+  bottom: calc(0.8rem + env(safe-area-inset-bottom)) !important;
+  z-index: 25;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.45rem !important;
+  margin: 0.5rem 0 0.9rem !important;
+  padding: 0.42rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.93) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.simple-card-controls button {
+  padding: 0.6rem 0.34rem !important;
+  color: var(--prep-ink-soft) !important;
+  font-size: clamp(0.72rem, 3vw, 0.86rem) !important;
+}
+
+.simple-card-controls .primary-action {
+  color: #fffdf7 !important;
+}
+
+.deck-command-shelf,
+.ghost-card,
+.flight-card,
+.deck-stage::before,
+.deck-stage::after {
+  display: none !important;
+}
+
+.deck-stage {
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 0 1rem !important;
+  padding: 0 0 calc(1.6rem + env(safe-area-inset-bottom)) !important;
+  overflow: visible !important;
+  perspective: none !important;
+}
+
+.drag-shell {
+  position: relative !important;
+  inset: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform-origin: center center;
+  touch-action: pan-y;
+}
+
+.person-card {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform: none !important;
+  transform-style: flat !important;
+}
+
+.card-face {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: min(68dvh, 620px) !important;
+  overflow: visible !important;
+  padding: 1.12rem !important;
+  transform: none !important;
+  backface-visibility: visible !important;
+}
+
+.card-face::before,
+.card-face::after {
+  display: none !important;
+}
+
+.person-card .card-back {
+  display: none !important;
+}
+
+.person-card.is-revealed .card-front {
+  display: none !important;
+}
+
+.person-card.is-revealed .card-back {
+  display: grid !important;
+}
+
+.portrait-frame {
+  width: clamp(128px, 38vw, 168px) !important;
+  height: clamp(128px, 38vw, 168px) !important;
+  margin: 0.8rem auto 0.95rem !important;
+  border: 6px solid var(--prep-paper) !important;
+  box-shadow: 0 18px 34px rgba(48, 64, 55, 0.16) !important;
+}
+
+.portrait-frame span {
+  color: var(--prep-teal-dark) !important;
+  font-size: 2.6rem !important;
+}
+
+.card-face h2 {
+  margin: 0.55rem 0 0.35rem !important;
+  font-size: clamp(2rem, 10vw, 3rem) !important;
+  font-weight: 940 !important;
+  line-height: 0.94 !important;
+}
+
+.intel-file-head,
+.role-panel,
+.status-grid > div {
+  display: grid;
+  gap: 0.3rem !important;
+  padding: 0.88rem !important;
+  border-radius: 18px !important;
+  background: var(--prep-paper-2) !important;
+}
+
+.intel-file-head strong,
+.role-panel strong,
+.status-grid strong {
+  color: var(--prep-ink) !important;
+  font-size: 1rem;
+}
+
+.role-panel span,
+.intel-file-head span:first-of-type,
+.status-grid span,
+.case-metrics span,
+.dossier-packet-panel > span,
+.profile-file-stack-top span {
+  color: var(--prep-muted) !important;
+  font-size: 0.68rem !important;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.source-chips {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.38rem !important;
+}
+
+.source-chip,
+.field-summary-strip span,
+.imported-list span {
+  min-height: 27px !important;
+  padding: 0.34rem 0.58rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  color: var(--prep-teal-dark) !important;
+  background: rgba(217, 231, 213, 0.62) !important;
+  box-shadow: none !important;
+  font-size: 0.6rem !important;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.dossier-packet-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 1rem 0 0.8rem !important;
+  overflow: hidden;
+}
+
+.dossier-packet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem !important;
+}
+
+.dossier-packet-toolbar > span {
+  color: var(--prep-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dossier-packet-toolbar > div {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.dossier-packet-toolbar button {
+  min-height: 36px !important;
+  padding: 0.35rem 0.58rem !important;
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper-2) !important;
+  font-size: 0.68rem !important;
+}
+
+.dossier-packet-carousel {
+  display: flex !important;
+  gap: 0.75rem !important;
+  overflow-x: auto;
+  overflow-y: visible;
+  margin: 0 -0.2rem;
+  padding: 0.12rem 0.2rem 0.92rem !important;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dossier-packet-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.dossier-packet-panel {
+  flex: 0 0 min(84vw, 350px) !important;
+  min-height: 250px !important;
+  max-height: none !important;
+  overflow: visible !important;
+  scroll-snap-align: center;
+  padding: 1rem !important;
+  transform: none !important;
+}
+
+.dossier-packet-panel h3 {
+  margin: 0.18rem 0 0.7rem !important;
+  font-size: 1.22rem !important;
+  line-height: 1.1 !important;
+}
+
+.dossier-packet-panel p,
+.dossier-packet-panel li {
+  font-size: 0.94rem !important;
+  line-height: 1.43 !important;
+}
+
+.dossier-status-grid {
+  grid-template-columns: 1fr !important;
+  gap: 0.62rem !important;
+}
+
+.profile-background-artifact {
+  display: none !important;
+}
+
+.profile-file-grid {
+  display: grid !important;
+  gap: 0.62rem !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+.profile-file-slip {
+  min-width: 0 !important;
+  padding: 0.82rem !important;
+}
+
+.profile-file-slip h3 {
+  margin: 0.3rem 0 0.38rem !important;
+  font-size: 1rem !important;
+}
+
+.dossier-panel-pips {
+  display: flex;
+  gap: 0.38rem;
+  overflow-x: auto;
+  margin: -0.15rem -0.2rem 0;
+  padding: 0 0.2rem 0.2rem;
+  scrollbar-width: none;
+}
+
+.dossier-panel-pips::-webkit-scrollbar {
+  display: none;
+}
+
+.dossier-panel-pips button {
+  flex: 0 0 auto;
+  min-height: 32px !important;
+  padding: 0.34rem 0.6rem !important;
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper-2) !important;
+  color: var(--prep-muted) !important;
+  font-size: 0.62rem !important;
+}
+
+.dossier-panel-pips button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+}
+
+.roster-showcase {
+  position: relative;
+  height: clamp(346px, 52dvh, 480px) !important;
+  margin: 0 -0.9rem 0.45rem !important;
+  overflow: hidden !important;
+  perspective: 860px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.roster-orbit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.roster-orbit-card.roster-card {
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  width: min(76vw, 318px) !important;
+  max-width: calc(100vw - 3.2rem);
+  min-height: 0 !important;
+  height: clamp(292px, 42dvh, 370px) !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  display: grid !important;
+  align-content: start;
+  justify-items: start;
+  gap: 0.58rem !important;
+  transform-origin: center center;
+  transition:
+    transform 360ms cubic-bezier(0.2, 0.9, 0.18, 1),
+    opacity 160ms linear !important;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.roster-orbit-card.active {
+  background:
+    linear-gradient(150deg, var(--prep-paper), #f8fbf4) !important;
+  box-shadow: var(--prep-shadow) !important;
+}
+
+.roster-card .mini-portrait {
+  width: 68px !important;
+  height: 68px !important;
+  border: 4px solid var(--prep-paper) !important;
+  box-shadow: 0 12px 22px rgba(48, 64, 55, 0.14) !important;
+}
+
+.roster-card strong {
+  margin-top: 0.25rem;
+  font-size: clamp(1.48rem, 7vw, 2.1rem) !important;
+  font-weight: 930;
+  line-height: 0.95 !important;
+}
+
+.roster-card small {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.9rem !important;
+  line-height: 1.28 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.roster-orbit-card:not(.active) .source-chips {
+  opacity: 0;
+}
+
+.roster-orbit-controls {
+  display: grid !important;
+  grid-template-columns: 1fr 1.2fr 1fr !important;
+  gap: 0.46rem !important;
+  margin: 0 0 0.8rem !important;
+  padding: 0.42rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.9) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+}
+
+.roster-orbit-controls button {
+  padding: 0.58rem 0.35rem !important;
+  font-size: clamp(0.72rem, 3vw, 0.86rem) !important;
+}
+
+.view-header {
+  align-items: center;
+}
+
+.view-header button {
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper-2) !important;
+  color: var(--prep-ink-soft) !important;
+}
+
+@media (max-width: 430px) {
+  .app-shell.clinical-shell {
+    padding-inline: 1rem !important;
+  }
+
+  .clinical-shell .app-header h1 {
+    font-size: clamp(2.58rem, 12.2vw, 3.5rem) !important;
+  }
+
+  .clinical-shell .system-light {
+    min-height: 40px;
+    padding-inline: 0.78rem;
+  }
+
+  .expert-command-main h2 {
+    font-size: clamp(3rem, 16vw, 4.25rem) !important;
+  }
+
+  .expert-current-count {
+    display: none !important;
+  }
+
+  .clinical-shell .expert-current-file-button {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .expert-priority-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card-face {
+    min-height: 0 !important;
+  }
+
+  .dossier-packet-panel {
+    flex-basis: min(82vw, 326px) !important;
+  }
+
+  .roster-showcase {
+    height: clamp(328px, 50dvh, 426px) !important;
+  }
+
+  .roster-orbit-card.roster-card {
+    width: min(74vw, 296px) !important;
+    height: clamp(278px, 39dvh, 340px) !important;
+  }
+}
+
+/* Prep Room no-glass cleanup. Keep after the final lock. */
+.clinical-shell button::before,
+.clinical-shell button::after,
+.clinical-shell .card-face::before,
+.clinical-shell .card-face::after,
+.clinical-shell .roster-card::before,
+.clinical-shell .roster-card::after,
+.clinical-shell .roster-showcase::before,
+.clinical-shell .roster-showcase::after,
+.clinical-shell .simple-file-header::before,
+.clinical-shell .simple-file-header::after,
+.clinical-shell .case-status-panel::before,
+.clinical-shell .case-status-panel::after,
+.clinical-shell .view-header::before,
+.clinical-shell .view-header::after,
+.clinical-shell .dossier-packet-panel::before,
+.clinical-shell .dossier-packet-panel::after {
+  display: none !important;
+  content: none !important;
+}
+
+.clinical-shell[data-view] .case-nav button,
+.clinical-shell .simple-card-controls button,
+.clinical-shell .roster-orbit-controls button,
+.clinical-shell .dossier-packet-toolbar button,
+.clinical-shell .dossier-panel-pips button,
+.clinical-shell .initials-rail button {
+  border: 1px solid var(--prep-line) !important;
+  color: var(--prep-ink-soft) !important;
+  background: var(--prep-paper-2) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.clinical-shell[data-view] .case-nav button.active,
+.clinical-shell .simple-card-controls .primary-action,
+.clinical-shell .roster-orbit-controls .primary-action,
+.clinical-shell .dossier-panel-pips button.active,
+.clinical-shell .initials-rail button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+  box-shadow: 0 10px 18px rgba(39, 102, 106, 0.18) !important;
+}
+
+.clinical-shell[data-view] .case-nav {
+  border-radius: 28px !important;
+  background: var(--prep-paper) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.clinical-shell .expert-command-panel,
+.clinical-shell .expert-panel-map,
+.clinical-shell .expert-room-panel,
+.clinical-shell .expert-priority-strip,
+.clinical-shell .simple-file-header,
+.clinical-shell .view-header,
+.clinical-shell .card-face,
+.clinical-shell .dossier-packet-panel,
+.clinical-shell .roster-card,
+.clinical-shell .role-panel,
+.clinical-shell .intel-file-head,
+.clinical-shell .status-grid > div,
+.clinical-shell .profile-file-slip {
+  border: 1px solid var(--prep-line) !important;
+  color: var(--prep-ink) !important;
+  background: var(--prep-paper) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.clinical-shell .expert-command-panel {
+  background:
+    linear-gradient(135deg, var(--prep-paper) 0%, #f8f5ed 58%, #eef5ec 100%) !important;
+}
+
+.clinical-shell .expert-command-panel::before {
+  display: block !important;
+  content: "" !important;
+  background: rgba(217, 209, 239, 0.48) !important;
+}
+
+.clinical-shell .expert-current-file {
+  background: var(--prep-teal-dark) !important;
+  box-shadow: 0 18px 42px rgba(23, 70, 75, 0.2) !important;
+}
+
+.clinical-shell .card-face {
+  background:
+    linear-gradient(180deg, var(--prep-paper), #f8faf4) !important;
+}
+
+.clinical-shell .dossier-packet-panel {
+  background: var(--prep-paper-2) !important;
+}
+
+.clinical-shell .portrait-frame,
+.clinical-shell .mini-portrait,
+.clinical-shell .expert-current-avatar,
+.clinical-shell .expert-mini-avatar {
+  background: var(--prep-sage) !important;
+  box-shadow: 0 10px 20px rgba(48, 64, 55, 0.1) !important;
+}
+
+.clinical-shell .roster-showcase {
+  height: clamp(340px, 50dvh, 450px) !important;
+  margin-top: 0.4rem !important;
+  background: transparent !important;
+}
+
+.clinical-shell .roster-orbit-card.roster-card {
+  width: min(78vw, 326px) !important;
+  height: clamp(292px, 40dvh, 350px) !important;
+  padding: 1rem !important;
+  overflow: hidden !important;
+  background: var(--prep-paper) !important;
+}
+
+.clinical-shell .roster-card .mini-portrait {
+  position: static !important;
+  width: 70px !important;
+  height: 70px !important;
+  justify-self: start;
+}
+
+.clinical-shell .roster-card strong {
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal !important;
+  font-size: clamp(1.28rem, 5.9vw, 1.72rem) !important;
+  line-height: 1.02 !important;
+}
+
+.clinical-shell .roster-card .source-chips {
+  max-height: 5.6rem;
+  overflow: hidden;
+}
+
+.clinical-shell .source-chip {
+  background: var(--prep-sage) !important;
+}
+
+@media (max-width: 430px) {
+  .clinical-shell .case-nav {
+    border-radius: 24px !important;
+  }
+
+  .clinical-shell .case-nav button {
+    min-height: 54px !important;
+  }
+
+  .clinical-shell .roster-orbit-card.roster-card {
+    width: min(78vw, 304px) !important;
+  }
+}
+
+/* Highest-specificity surface reset for leftover generated glass rules. */
+main.app-shell.clinical-shell[data-view] .simple-file-header,
+main.app-shell.clinical-shell[data-view] .view-header,
+main.app-shell.clinical-shell[data-view] .card-face.card-front,
+main.app-shell.clinical-shell[data-view] .card-face.card-back,
+main.app-shell.clinical-shell[data-view] .dossier-packet-panel,
+main.app-shell.clinical-shell[data-view] .profile-file-slip,
+main.app-shell.clinical-shell[data-view] .role-panel,
+main.app-shell.clinical-shell[data-view] .intel-file-head,
+main.app-shell.clinical-shell[data-view] .status-grid > div {
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper) !important;
+  background-image: none !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+}
+
+main.app-shell.clinical-shell[data-view] .dossier-packet-panel,
+main.app-shell.clinical-shell[data-view] .role-panel,
+main.app-shell.clinical-shell[data-view] .intel-file-head,
+main.app-shell.clinical-shell[data-view] .status-grid > div,
+main.app-shell.clinical-shell[data-view] .profile-file-slip {
+  background: var(--prep-paper-2) !important;
+  background-image: none !important;
+}
+
+main.app-shell.clinical-shell[data-view] .simple-card-controls,
+main.app-shell.clinical-shell[data-view] .roster-orbit-controls {
+  background: var(--prep-paper) !important;
+  background-image: none !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+main.app-shell.clinical-shell[data-view] .simple-card-controls::before,
+main.app-shell.clinical-shell[data-view] .simple-card-controls::after,
+main.app-shell.clinical-shell[data-view] .roster-orbit-controls::before,
+main.app-shell.clinical-shell[data-view] .roster-orbit-controls::after {
+  display: none !important;
+  content: none !important;
+}
+
+main.app-shell.clinical-shell[data-view] .roster-orbit-card.roster-card {
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper) !important;
+  background-image: none !important;
+  box-shadow: var(--prep-shadow) !important;
+}
+
+main.app-shell.clinical-shell[data-view] .source-chip {
+  border-color: var(--prep-line) !important;
+  background: var(--prep-sage) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+main.app-shell.clinical-shell[data-view="missions"] .case-nav button.active,
+main.app-shell.clinical-shell[data-view="deck"] .case-nav button.active,
+main.app-shell.clinical-shell[data-view="roster"] .case-nav button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+  background-image: none !important;
+  box-shadow: 0 10px 18px rgba(39, 102, 106, 0.18) !important;
+}
+
 /* Dossier glass production lock. Keep this block last. */
 html,
 body {
@@ -9789,5 +11093,1051 @@ body,
   .expert-person-row .source-chips {
     grid-column: 2;
     justify-content: flex-start;
+  }
+}
+
+/* Prep Room final lock: this must stay last. */
+:root {
+  color-scheme: light;
+  --prep-ink: #17201c;
+  --prep-ink-soft: #33423c;
+  --prep-muted: #6c766f;
+  --prep-bg: #f7f3ea;
+  --prep-bg-2: #ecefe4;
+  --prep-paper: #fffdf7;
+  --prep-paper-2: #f3f6ee;
+  --prep-teal: #27666a;
+  --prep-teal-dark: #17464b;
+  --prep-sage: #d9e7d5;
+  --prep-clay: #c97755;
+  --prep-lilac: #d9d1ef;
+  --prep-blue: #d6e9ee;
+  --prep-line: rgba(39, 60, 53, 0.14);
+  --prep-shadow: 0 18px 46px rgba(48, 64, 55, 0.13);
+  --prep-shadow-soft: 0 10px 28px rgba(48, 64, 55, 0.09);
+  --prep-radius: 24px;
+  --prep-radius-lg: 34px;
+}
+
+html,
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 12% -6%, rgba(217, 231, 213, 0.86), transparent 20rem),
+    radial-gradient(circle at 98% 8%, rgba(214, 233, 238, 0.92), transparent 18rem),
+    linear-gradient(180deg, var(--prep-bg) 0%, #f4f7ef 54%, var(--prep-bg-2) 100%) !important;
+  color: var(--prep-ink);
+}
+
+body {
+  overflow-y: auto;
+}
+
+.app-shell.clinical-shell {
+  width: min(100%, 560px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(1rem, env(safe-area-inset-top)) clamp(1rem, 4vw, 1.35rem)
+    max(2rem, env(safe-area-inset-bottom)) !important;
+  overflow-x: hidden;
+  color: var(--prep-ink) !important;
+  background:
+    linear-gradient(150deg, rgba(255, 253, 247, 0.86), rgba(255, 253, 247, 0.18) 44%, rgba(217, 231, 213, 0.4)),
+    radial-gradient(circle at 0% 22%, rgba(201, 119, 85, 0.13), transparent 15rem),
+    transparent !important;
+}
+
+.app-shell.clinical-shell::before,
+.app-shell.clinical-shell::after,
+.clinical-shell .scanline-overlay,
+.clinical-shell .liquid-video-backdrop,
+.clinical-shell .reticle,
+.clinical-shell .confidential-stamp,
+.clinical-shell .file-tab,
+.clinical-shell .mini-tab,
+.clinical-shell .start-folder-tab,
+.clinical-shell .deck-command-shelf,
+.clinical-shell .ghost-card,
+.clinical-shell .flight-card,
+.clinical-shell .deck-stage::before,
+.clinical-shell .deck-stage::after,
+.clinical-shell .profile-background-artifact {
+  display: none !important;
+  content: none !important;
+}
+
+.clinical-shell *,
+.clinical-shell *::before,
+.clinical-shell *::after {
+  text-shadow: none !important;
+}
+
+.clinical-shell .app-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.45rem 0 1.1rem !important;
+  padding: 0 !important;
+}
+
+.clinical-shell .kicker {
+  margin: 0;
+  color: var(--prep-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 850;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+}
+
+.clinical-shell .app-header h1 {
+  margin: 0.08rem 0 0 !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(2.78rem, 13vw, 4.3rem) !important;
+  font-weight: 900 !important;
+  line-height: 0.88 !important;
+  letter-spacing: 0 !important;
+}
+
+.clinical-shell .system-light {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(39, 102, 106, 0.18);
+  border-radius: 999px;
+  color: var(--prep-teal-dark) !important;
+  background: var(--prep-sage) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.clinical-shell .case-nav {
+  position: sticky;
+  top: max(0.5rem, env(safe-area-inset-top));
+  z-index: 20;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.38rem !important;
+  margin: 0 0 1rem !important;
+  padding: 0.38rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.94) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.clinical-shell .case-nav button,
+.clinical-shell :is(.simple-card-controls button, .roster-orbit-controls button, .initials-rail button, .profile-status button, .dossier-packet-toolbar button, .dossier-panel-pips button) {
+  min-height: 44px !important;
+  min-width: 0;
+  border: 1px solid transparent !important;
+  outline: 0 !important;
+  border-radius: 999px !important;
+  color: var(--prep-ink-soft) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-weight: 850;
+}
+
+.clinical-shell .case-nav button span {
+  color: inherit !important;
+  font-size: 0.95rem !important;
+  line-height: 1;
+}
+
+.clinical-shell .case-nav button small {
+  display: block !important;
+  margin-top: 0.18rem;
+  color: currentColor !important;
+  font-size: 0.61rem !important;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  opacity: 0.64;
+  text-transform: uppercase;
+}
+
+.clinical-shell .case-nav button.active,
+.clinical-shell :is(.primary-action, .expert-study-button, .profile-status button.active, .initials-rail button.active, .dossier-panel-pips button.active) {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+  box-shadow: 0 12px 22px rgba(39, 102, 106, 0.22) !important;
+}
+
+.clinical-shell button:active {
+  transform: translateY(1px);
+}
+
+.clinical-shell[data-view="missions"],
+.clinical-shell[data-view="deck"],
+.clinical-shell[data-view="roster"] {
+  background: transparent !important;
+}
+
+.clinical-shell[data-view="missions"]::before,
+.clinical-shell[data-view="deck"]::before,
+.clinical-shell[data-view="roster"]::before {
+  display: none !important;
+  content: none !important;
+}
+
+.expert-home {
+  display: grid;
+  gap: 0.9rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.expert-command-panel,
+.expert-current-file,
+.expert-panel-map,
+.expert-room-panel,
+.expert-priority-strip,
+.simple-file-header,
+.case-status-panel,
+.view-header,
+.card-face,
+.dossier-packet-panel,
+.roster-card,
+.profile-file-slip,
+.role-panel,
+.intel-file-head,
+.status-grid > div,
+.source-paper,
+.briefing-paper,
+.metadata-card,
+.import-panel,
+.evidence-drawer {
+  border: 1px solid var(--prep-line) !important;
+  outline: 0 !important;
+  border-radius: var(--prep-radius) !important;
+  color: var(--prep-ink) !important;
+  background: var(--prep-paper) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.expert-command-panel {
+  position: relative;
+  display: grid;
+  gap: 1.1rem !important;
+  overflow: hidden;
+  padding: 1.15rem !important;
+  border-radius: var(--prep-radius-lg) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 247, 0.98), rgba(243, 246, 238, 0.9)),
+    var(--prep-paper) !important;
+}
+
+.expert-command-panel::before {
+  position: absolute;
+  inset: auto -9rem -10rem auto;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 999px;
+  content: "";
+  background: rgba(217, 209, 239, 0.64);
+  pointer-events: none;
+}
+
+.expert-command-panel::after {
+  position: absolute;
+  inset: 1rem auto auto 1rem;
+  width: 4.2rem;
+  height: 0.32rem;
+  border-radius: 999px;
+  content: "";
+  background: var(--prep-clay);
+}
+
+.expert-command-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.expert-command-topline,
+.expert-command-footer,
+.expert-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.expert-command-topline {
+  padding-top: 0.58rem;
+}
+
+.expert-command-topline span,
+.expert-section-header > span,
+.expert-current-count {
+  color: var(--prep-muted) !important;
+  font-size: 0.68rem !important;
+  font-weight: 850;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+
+.expert-command-main {
+  display: block !important;
+}
+
+.expert-command-main h2 {
+  max-width: 8.4ch;
+  margin: 0.22rem 0 0.8rem !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(3.2rem, 17vw, 5.15rem) !important;
+  font-weight: 950;
+  line-height: 0.84 !important;
+  letter-spacing: 0 !important;
+}
+
+.expert-command-main p {
+  max-width: 30rem;
+  margin: 0 !important;
+  color: var(--prep-ink-soft) !important;
+  font-size: 1.02rem !important;
+  line-height: 1.45 !important;
+}
+
+.expert-signal-lens {
+  display: none !important;
+}
+
+.expert-command-footer {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+}
+
+.expert-study-button {
+  width: 100%;
+  min-height: 54px !important;
+  border-radius: 999px !important;
+  font-size: 1rem;
+}
+
+.expert-metric-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem !important;
+  margin: 0;
+}
+
+.expert-metric-strip div {
+  min-width: 0;
+  padding: 0.72rem 0.68rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 253, 247, 0.76) !important;
+}
+
+.expert-metric-strip dt {
+  color: var(--prep-muted) !important;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.expert-metric-strip dd {
+  margin: 0.18rem 0 0;
+  color: var(--prep-ink);
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.expert-current-file {
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--prep-teal-dark), var(--prep-teal)) !important;
+  box-shadow: 0 18px 42px rgba(23, 70, 75, 0.22) !important;
+}
+
+.clinical-shell .expert-current-file-button {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+  min-height: 104px;
+  padding: 0.95rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #fffdf7 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: left;
+}
+
+.expert-current-avatar,
+.expert-mini-avatar,
+.portrait-frame,
+.mini-portrait,
+.mini-flight-portrait {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 999px !important;
+  background: var(--prep-sage) !important;
+  color: var(--prep-teal-dark) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  font-weight: 900;
+}
+
+.expert-current-avatar {
+  width: 64px;
+  height: 64px;
+  border: 2px solid rgba(255, 253, 247, 0.88) !important;
+}
+
+.expert-mini-avatar {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--prep-line) !important;
+}
+
+.expert-current-avatar img,
+.expert-mini-avatar img,
+.portrait-frame img,
+.mini-portrait img,
+.mini-flight-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: none !important;
+}
+
+.expert-current-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.18rem;
+}
+
+.expert-current-copy small,
+.expert-current-copy span,
+.expert-current-count {
+  color: rgba(255, 253, 247, 0.78) !important;
+}
+
+.expert-current-copy strong {
+  overflow: hidden;
+  color: #fffdf7 !important;
+  font-size: clamp(1.32rem, 6.6vw, 1.9rem);
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expert-panel-map,
+.expert-room-panel,
+.expert-priority-strip {
+  padding: 1rem !important;
+}
+
+.expert-section-header {
+  align-items: flex-start;
+  margin-bottom: 0.78rem !important;
+}
+
+.expert-section-header h3,
+.simple-file-header h2,
+.view-header h2,
+.case-status-panel h2,
+.card-face h2,
+.dossier-packet-panel h3,
+.roster-card strong,
+.expert-person-row strong {
+  color: var(--prep-ink) !important;
+  letter-spacing: 0 !important;
+}
+
+.expert-section-header h3 {
+  margin: 0.14rem 0 0 !important;
+  font-size: clamp(1.55rem, 7vw, 2.2rem) !important;
+  font-weight: 920;
+  line-height: 0.98 !important;
+}
+
+.expert-panel-list {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 253, 247, 0.72) !important;
+}
+
+.expert-person-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.72rem;
+  align-items: center;
+  min-height: 70px;
+  padding: 0.72rem !important;
+  border-top: 1px solid var(--prep-line) !important;
+  background: transparent !important;
+}
+
+.expert-person-row:first-child {
+  border-top: 0 !important;
+}
+
+.expert-person-row.active {
+  background: var(--prep-sage) !important;
+}
+
+.expert-person-row small,
+.roster-card small,
+.email-line,
+.prompt-line,
+.dossier-packet-panel p,
+.dossier-packet-panel li,
+.role-panel small,
+.status-grid small,
+.case-metrics small {
+  color: var(--prep-ink-soft) !important;
+}
+
+.expert-person-row .source-chips {
+  grid-column: 2;
+}
+
+.expert-focus-stack {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.expert-focus-stack section {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.88rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  background: var(--prep-paper-2) !important;
+}
+
+.expert-focus-stack section > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--prep-teal-dark) !important;
+  background: var(--prep-sage);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.expert-focus-stack strong {
+  color: var(--prep-ink) !important;
+  font-size: 1rem;
+}
+
+.expert-focus-stack p {
+  margin: 0.24rem 0 0;
+  color: var(--prep-ink-soft) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.36 !important;
+}
+
+.expert-priority-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.48rem !important;
+}
+
+.clinical-shell .expert-priority-strip button {
+  display: grid !important;
+  min-height: 78px !important;
+  place-items: center;
+  padding: 0.55rem 0.35rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 18px !important;
+  color: var(--prep-ink-soft) !important;
+  background: var(--prep-paper-2) !important;
+}
+
+.clinical-shell .expert-priority-strip button.active {
+  color: #fffdf7 !important;
+  background: var(--prep-teal) !important;
+}
+
+.simple-file-header,
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.85rem !important;
+  padding: 1rem !important;
+}
+
+.simple-file-header h2,
+.view-header h2,
+.case-status-panel h2 {
+  margin: 0.16rem 0 0 !important;
+  font-size: clamp(1.65rem, 8vw, 2.4rem) !important;
+  line-height: 0.96 !important;
+}
+
+.simple-file-header span {
+  color: var(--prep-muted) !important;
+  font-size: 0.84rem;
+}
+
+.case-status-panel {
+  display: none !important;
+}
+
+.initials-rail {
+  display: flex !important;
+  gap: 0.48rem !important;
+  overflow-x: auto;
+  margin: 0 -0.2rem 0.72rem !important;
+  padding: 0.1rem 0.2rem 0.55rem !important;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.initials-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.initials-rail button {
+  flex: 0 0 48px;
+  width: 48px;
+  min-height: 48px !important;
+  scroll-snap-align: center;
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper) !important;
+}
+
+.simple-card-controls {
+  position: sticky !important;
+  top: auto !important;
+  bottom: calc(0.8rem + env(safe-area-inset-bottom)) !important;
+  z-index: 25;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.45rem !important;
+  margin: 0.5rem 0 0.9rem !important;
+  padding: 0.42rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.93) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.simple-card-controls button {
+  padding: 0.6rem 0.34rem !important;
+  color: var(--prep-ink-soft) !important;
+  font-size: clamp(0.72rem, 3vw, 0.86rem) !important;
+}
+
+.simple-card-controls .primary-action {
+  color: #fffdf7 !important;
+}
+
+.deck-stage {
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 0 1rem !important;
+  padding: 0 0 calc(1.6rem + env(safe-area-inset-bottom)) !important;
+  overflow: visible !important;
+  perspective: none !important;
+}
+
+.drag-shell {
+  position: relative !important;
+  inset: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform-origin: center center;
+  touch-action: pan-y;
+}
+
+.person-card {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform: none !important;
+  transform-style: flat !important;
+}
+
+.card-face {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: min(68dvh, 620px) !important;
+  overflow: visible !important;
+  padding: 1.12rem !important;
+  transform: none !important;
+  backface-visibility: visible !important;
+}
+
+.card-face::before,
+.card-face::after {
+  display: none !important;
+}
+
+.person-card .card-back {
+  display: none !important;
+}
+
+.person-card.is-revealed .card-front {
+  display: none !important;
+}
+
+.person-card.is-revealed .card-back {
+  display: grid !important;
+}
+
+.portrait-frame {
+  width: clamp(128px, 38vw, 168px) !important;
+  height: clamp(128px, 38vw, 168px) !important;
+  margin: 0.8rem auto 0.95rem !important;
+  border: 6px solid var(--prep-paper) !important;
+  box-shadow: 0 18px 34px rgba(48, 64, 55, 0.16) !important;
+}
+
+.portrait-frame span {
+  color: var(--prep-teal-dark) !important;
+  font-size: 2.6rem !important;
+}
+
+.card-face h2 {
+  margin: 0.55rem 0 0.35rem !important;
+  font-size: clamp(2rem, 10vw, 3rem) !important;
+  font-weight: 940 !important;
+  line-height: 0.94 !important;
+}
+
+.intel-file-head,
+.role-panel,
+.status-grid > div {
+  display: grid;
+  gap: 0.3rem !important;
+  padding: 0.88rem !important;
+  border-radius: 18px !important;
+  background: var(--prep-paper-2) !important;
+}
+
+.intel-file-head strong,
+.role-panel strong,
+.status-grid strong {
+  color: var(--prep-ink) !important;
+  font-size: 1rem;
+}
+
+.role-panel span,
+.intel-file-head span:first-of-type,
+.status-grid span,
+.case-metrics span,
+.dossier-packet-panel > span,
+.profile-file-stack-top span {
+  color: var(--prep-muted) !important;
+  font-size: 0.68rem !important;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.source-chips {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.38rem !important;
+}
+
+.source-chip,
+.field-summary-strip span,
+.imported-list span {
+  min-height: 27px !important;
+  padding: 0.34rem 0.58rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  color: var(--prep-teal-dark) !important;
+  background: rgba(217, 231, 213, 0.62) !important;
+  box-shadow: none !important;
+  font-size: 0.6rem !important;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.dossier-packet-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 1rem 0 0.8rem !important;
+  overflow: hidden;
+}
+
+.dossier-packet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem !important;
+}
+
+.dossier-packet-toolbar > span {
+  color: var(--prep-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dossier-packet-toolbar > div {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.dossier-packet-toolbar button {
+  min-height: 36px !important;
+  padding: 0.35rem 0.58rem !important;
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper-2) !important;
+  font-size: 0.68rem !important;
+}
+
+.dossier-packet-carousel {
+  display: flex !important;
+  gap: 0.75rem !important;
+  overflow-x: auto;
+  overflow-y: visible;
+  margin: 0 -0.2rem;
+  padding: 0.12rem 0.2rem 0.92rem !important;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dossier-packet-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.dossier-packet-panel {
+  flex: 0 0 min(84vw, 350px) !important;
+  min-height: 250px !important;
+  max-height: none !important;
+  overflow: visible !important;
+  scroll-snap-align: center;
+  padding: 1rem !important;
+  transform: none !important;
+}
+
+.dossier-packet-panel h3 {
+  margin: 0.18rem 0 0.7rem !important;
+  font-size: 1.22rem !important;
+  line-height: 1.1 !important;
+}
+
+.dossier-packet-panel p,
+.dossier-packet-panel li {
+  font-size: 0.94rem !important;
+  line-height: 1.43 !important;
+}
+
+.dossier-status-grid {
+  grid-template-columns: 1fr !important;
+  gap: 0.62rem !important;
+}
+
+.profile-file-grid {
+  display: grid !important;
+  gap: 0.62rem !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+.profile-file-slip {
+  min-width: 0 !important;
+  padding: 0.82rem !important;
+}
+
+.profile-file-slip h3 {
+  margin: 0.3rem 0 0.38rem !important;
+  font-size: 1rem !important;
+}
+
+.dossier-panel-pips {
+  display: flex;
+  gap: 0.38rem;
+  overflow-x: auto;
+  margin: -0.15rem -0.2rem 0;
+  padding: 0 0.2rem 0.2rem;
+  scrollbar-width: none;
+}
+
+.dossier-panel-pips::-webkit-scrollbar {
+  display: none;
+}
+
+.dossier-panel-pips button {
+  flex: 0 0 auto;
+  min-height: 32px !important;
+  padding: 0.34rem 0.6rem !important;
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper-2) !important;
+  color: var(--prep-muted) !important;
+  font-size: 0.62rem !important;
+}
+
+.roster-showcase {
+  position: relative;
+  height: clamp(346px, 52dvh, 480px) !important;
+  margin: 0 -0.9rem 0.45rem !important;
+  overflow: hidden !important;
+  perspective: 860px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.roster-orbit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.roster-orbit-card.roster-card {
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  width: min(76vw, 318px) !important;
+  max-width: calc(100vw - 3.2rem);
+  min-height: 0 !important;
+  height: clamp(292px, 42dvh, 370px) !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  display: grid !important;
+  align-content: start;
+  justify-items: start;
+  gap: 0.58rem !important;
+  transform-origin: center center;
+  transition:
+    transform 360ms cubic-bezier(0.2, 0.9, 0.18, 1),
+    opacity 160ms linear !important;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.roster-orbit-card.active {
+  background: linear-gradient(150deg, var(--prep-paper), #f8fbf4) !important;
+  box-shadow: var(--prep-shadow) !important;
+}
+
+.roster-card .mini-portrait {
+  width: 68px !important;
+  height: 68px !important;
+  border: 4px solid var(--prep-paper) !important;
+  box-shadow: 0 12px 22px rgba(48, 64, 55, 0.14) !important;
+}
+
+.roster-card strong {
+  margin-top: 0.25rem;
+  font-size: clamp(1.48rem, 7vw, 2.1rem) !important;
+  font-weight: 930;
+  line-height: 0.95 !important;
+}
+
+.roster-card small {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.9rem !important;
+  line-height: 1.28 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.roster-orbit-card:not(.active) .source-chips {
+  opacity: 0;
+}
+
+.roster-orbit-controls {
+  display: grid !important;
+  grid-template-columns: 1fr 1.2fr 1fr !important;
+  gap: 0.46rem !important;
+  margin: 0 0 0.8rem !important;
+  padding: 0.42rem !important;
+  border: 1px solid var(--prep-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.9) !important;
+  box-shadow: var(--prep-shadow-soft) !important;
+}
+
+.roster-orbit-controls button {
+  padding: 0.58rem 0.35rem !important;
+  font-size: clamp(0.72rem, 3vw, 0.86rem) !important;
+}
+
+.view-header {
+  align-items: center;
+}
+
+.view-header button {
+  border: 1px solid var(--prep-line) !important;
+  background: var(--prep-paper-2) !important;
+  color: var(--prep-ink-soft) !important;
+}
+
+@media (max-width: 430px) {
+  .app-shell.clinical-shell {
+    padding-inline: 1rem !important;
+  }
+
+  .clinical-shell .app-header h1 {
+    font-size: clamp(2.58rem, 12.2vw, 3.5rem) !important;
+  }
+
+  .clinical-shell .system-light {
+    min-height: 40px;
+    padding-inline: 0.78rem;
+  }
+
+  .expert-command-main h2 {
+    font-size: clamp(3rem, 16vw, 4.25rem) !important;
+  }
+
+  .expert-current-count {
+    display: none !important;
+  }
+
+  .clinical-shell .expert-current-file-button {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .expert-priority-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card-face {
+    min-height: 0 !important;
+  }
+
+  .dossier-packet-panel {
+    flex-basis: min(82vw, 326px) !important;
+  }
+
+  .roster-showcase {
+    height: clamp(328px, 50dvh, 426px) !important;
+  }
+
+  .roster-orbit-card.roster-card {
+    width: min(74vw, 296px) !important;
+    height: clamp(278px, 39dvh, 340px) !important;
   }
 }
