@@ -6488,6 +6488,91 @@ button {
   }
 }
 
+/* Separate deck study from person detail, and put people-forward content first. */
+.clinical-shell[data-view="deck"] :is(
+  .simple-file-header,
+  .case-status-panel,
+  .initials-rail,
+  .deck-command-shelf,
+  .simple-card-controls,
+  .deck-stage
+) {
+  display: none !important;
+}
+
+.clinical-shell[data-view="person"] :is(.cards-study-header, .pre-read-study-stack) {
+  display: none !important;
+}
+
+.clinical-shell .expert-home .expert-current-file {
+  order: -3;
+}
+
+.clinical-shell .expert-home .expert-panel-map {
+  order: -2;
+}
+
+.clinical-shell .expert-home .expert-command-panel {
+  order: 3;
+}
+
+.clinical-shell .identity-prep-notes {
+  display: grid;
+  gap: 0.62rem;
+  margin-top: 0.85rem;
+  padding: 0.92rem;
+  border: 1px solid var(--prep-line);
+  border-radius: 20px;
+  background: rgba(255, 253, 247, 0.76);
+}
+
+.clinical-shell .identity-prep-notes > span {
+  color: var(--prep-muted);
+  font-size: 0.72rem;
+  font-weight: 920;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.clinical-shell .identity-prep-notes p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--prep-ink-soft) !important;
+  font-size: 0.92rem;
+  line-height: 1.36;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+}
+
+.clinical-shell .identity-prep-notes ul {
+  display: grid;
+  gap: 0.38rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clinical-shell .identity-prep-notes li {
+  position: relative;
+  padding-left: 1rem;
+  color: var(--prep-ink) !important;
+  font-size: 0.9rem;
+  font-weight: 760;
+  line-height: 1.25;
+}
+
+.clinical-shell .identity-prep-notes li::before {
+  position: absolute;
+  top: 0.5em;
+  left: 0;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: var(--prep-teal);
+  content: "";
+}
+
 /* Minimal correction pass: remove old controls, prioritize person content, and restore easy vertical scrolling. */
 main.app-shell.clinical-shell {
   padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)) !important;

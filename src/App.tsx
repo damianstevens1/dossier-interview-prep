@@ -3,7 +3,7 @@ import type { ChangeEvent } from "react";
 import { BRIEFING_CARDS, FLASH_CARDS, PRE_READ_DECK, PROVENANCE_SECTIONS, SEED_PEOPLE, SOURCE_EVIDENCE } from "./data";
 import type { FlashCard, ParsedProfileIntel, PersonDossier, ProfileStatus, SourceEvidence } from "./types";
 
-type ViewMode = "deck" | "missions" | "roster" | "import" | "briefing" | "metadata";
+type ViewMode = "deck" | "person" | "missions" | "roster" | "import" | "briefing" | "metadata";
 type DeckMotion = "idle" | "next" | "previous" | "shuffle";
 
 const PEOPLE_STORAGE_KEY = "dossier-people-glass-v1";
@@ -650,7 +650,7 @@ function App() {
     readStorage(CASE_BRIEF_STORAGE_KEY, DEFAULT_CASE_BRIEF),
   );
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [view, setView] = useState<ViewMode>("missions");
+  const [view, setView] = useState<ViewMode>("roster");
   const [isRevealed, setIsRevealed] = useState(false);
   const [isEvidenceOpen, setIsEvidenceOpen] = useState(false);
   const [deckMotion, setDeckMotion] = useState<DeckMotion>("idle");
@@ -1081,7 +1081,7 @@ function App() {
   function goToIndex(index: number, motion: DeckMotion = "next") {
     if (!people.length) return;
     startMotion(motion);
-    if ((motion === "next" || motion === "previous") && view === "deck") {
+    if ((motion === "next" || motion === "previous") && view === "person") {
       window.clearTimeout(flightTimer.current);
       setFlightCard({ person: currentPerson, direction: motion });
       flightTimer.current = window.setTimeout(() => setFlightCard(null), 540);
@@ -1205,7 +1205,7 @@ function App() {
       clearRosterDragState();
     }
 
-    setView("deck");
+    setView("person");
     setIsRevealed(true);
     setDossierPanelIndex(0);
     window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
@@ -1618,18 +1618,21 @@ function App() {
   function renderCaseNav() {
     return (
       <nav className="case-nav" aria-label="Interview prep sections">
-        {VIEW_NAV.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            className={view === item.id ? "active" : ""}
-            aria-current={view === item.id ? "page" : undefined}
-            onClick={() => setView(item.id)}
-          >
-            <span>{item.label}</span>
-            <small>{item.detail}</small>
-          </button>
-        ))}
+        {VIEW_NAV.map((item) => {
+          const isActive = view === item.id || (view === "person" && item.id === "roster");
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className={isActive ? "active" : ""}
+              aria-current={isActive ? "page" : undefined}
+              onClick={() => setView(item.id)}
+            >
+              <span>{item.label}</span>
+              <small>{item.detail}</small>
+            </button>
+          );
+        })}
       </nav>
     );
   }
@@ -1662,7 +1665,7 @@ function App() {
     );
   }
 
-  function renderDeck() {
+  function renderDeck(includePersonDetail = false) {
     const dossierPanelLabels = [
       "Identity",
       currentPerson.profileBackdropUrl || currentPerson.profileBackgroundSummary ? "Background" : null,
@@ -1680,6 +1683,16 @@ function App() {
 
     return (
       <>
+        {!includePersonDetail ? (
+          <section className="cards-study-header view-header" aria-label="Cards overview">
+            <div>
+              <p className="kicker">CARDS</p>
+              <h2>Pre-read and practice</h2>
+            </div>
+            <span className="view-count">{PRE_READ_DECK.length} deck images</span>
+          </section>
+        ) : null}
+
         <section className="simple-file-header" aria-label="Current file">
           <div>
             <p className="kicker">PERSON</p>
@@ -1960,6 +1973,15 @@ function App() {
                         </div>
                       </div>
                       <SourceChips chips={currentChips} compact />
+                      <div className="identity-prep-notes">
+                        <span>Why this matters</span>
+                        <p>{currentPerson.whyTheyMatter}</p>
+                        <ul>
+                          {currentPerson.likelyCaresAbout.slice(0, 3).map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
                     </article>
 
                     {currentPerson.profileBackdropUrl || currentPerson.profileBackgroundSummary ? (
@@ -2376,8 +2398,8 @@ function App() {
             className="expert-current-file-button"
             type="button"
             onClick={() => {
-              setView("deck");
-              setIsRevealed(false);
+              setView("person");
+              setIsRevealed(true);
             }}
           >
             <span className={currentPerson.profilePhotoUrl ? "expert-current-avatar has-photo" : "expert-current-avatar"}>
@@ -2477,8 +2499,8 @@ function App() {
               className={index === currentIndex ? "active" : ""}
               onClick={() => {
                 setCurrentIndex(index);
-                setView("deck");
-                setIsRevealed(false);
+                setView("person");
+                setIsRevealed(true);
               }}
             >
               <span>{person.initials}</span>
@@ -3106,7 +3128,8 @@ function App() {
 
       {renderCaseNav()}
 
-      {view === "deck" ? renderDeck() : null}
+      {view === "deck" ? renderDeck(false) : null}
+      {view === "person" ? renderDeck(true) : null}
       {view === "missions" ? renderMissions() : null}
       {view === "roster" ? renderRoster() : null}
       {view === "import" ? renderImport() : null}
