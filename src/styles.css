@@ -6096,6 +6096,266 @@ button {
   }
 }
 
+/* Minimal correction pass: remove old controls, prioritize person content, and restore easy vertical scrolling. */
+main.app-shell.clinical-shell {
+  padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+main.app-shell.clinical-shell .source-chips,
+main.app-shell.clinical-shell .source-chip,
+main.app-shell.clinical-shell .study-pips,
+main.app-shell.clinical-shell .dossier-panel-pips,
+main.app-shell.clinical-shell .initials-rail,
+main.app-shell.clinical-shell .intel-file-head,
+main.app-shell.clinical-shell .role-panel {
+  display: none !important;
+}
+
+main.app-shell.clinical-shell .deck-stage {
+  padding-bottom: calc(8rem + env(safe-area-inset-bottom, 0px)) !important;
+  touch-action: pan-y !important;
+}
+
+main.app-shell.clinical-shell .drag-shell,
+main.app-shell.clinical-shell .person-card,
+main.app-shell.clinical-shell .card-face {
+  overflow: visible !important;
+  touch-action: pan-y !important;
+}
+
+main.app-shell.clinical-shell .card-face {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  gap: 1rem !important;
+  padding: 1.18rem !important;
+}
+
+main.app-shell.clinical-shell .person-card-head {
+  display: grid;
+  gap: 0.34rem;
+  margin: 0 0 0.2rem;
+}
+
+main.app-shell.clinical-shell .person-card-head h2 {
+  margin: 0 !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(2.15rem, 11vw, 3.35rem) !important;
+  font-weight: 940 !important;
+  line-height: 0.94 !important;
+  letter-spacing: 0 !important;
+}
+
+main.app-shell.clinical-shell .person-card-head p {
+  margin: 0 !important;
+  color: var(--prep-ink-soft) !important;
+  font-size: clamp(1rem, 4.7vw, 1.22rem) !important;
+  font-weight: 720 !important;
+  line-height: 1.22 !important;
+}
+
+main.app-shell.clinical-shell .person-card-head small {
+  color: var(--prep-muted) !important;
+  font-size: 0.92rem !important;
+  font-weight: 650 !important;
+  line-height: 1.25 !important;
+}
+
+main.app-shell.clinical-shell .portrait-frame {
+  margin: 0.35rem auto 0.35rem !important;
+}
+
+main.app-shell.clinical-shell .prompt-line {
+  margin: 0.1rem 0 0 !important;
+  color: var(--prep-muted) !important;
+  font-size: 1rem !important;
+}
+
+main.app-shell.clinical-shell .dossier-packet-shell {
+  margin-top: 0.2rem !important;
+  overflow: visible !important;
+  touch-action: pan-x pan-y !important;
+}
+
+main.app-shell.clinical-shell .dossier-packet-carousel {
+  align-items: stretch !important;
+  min-height: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  touch-action: pan-x pan-y !important;
+}
+
+main.app-shell.clinical-shell .dossier-packet-panel {
+  min-height: 0 !important;
+  padding: 1rem !important;
+}
+
+main.app-shell.clinical-shell .study-card-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.8rem !important;
+}
+
+main.app-shell.clinical-shell .study-card-top small {
+  color: var(--prep-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 760 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap;
+}
+
+main.app-shell.clinical-shell .roster-orbit-card.roster-card {
+  min-height: 236px !important;
+  height: auto !important;
+  padding: 1.22rem !important;
+  gap: 0.46rem !important;
+}
+
+main.app-shell.clinical-shell .roster-card .mini-portrait {
+  margin-top: 0.7rem !important;
+}
+
+main.app-shell.clinical-shell .roster-card strong {
+  margin: 0 !important;
+}
+
+main.app-shell.clinical-shell .roster-card small {
+  margin: 0 !important;
+  -webkit-line-clamp: 4;
+}
+
+/* Minimal correction pass: remove old controls, prioritize person content, and restore easy vertical scrolling. */
+main.app-shell.clinical-shell {
+  padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+main.app-shell.clinical-shell .source-chips,
+main.app-shell.clinical-shell .source-chip,
+main.app-shell.clinical-shell .study-pips,
+main.app-shell.clinical-shell .dossier-panel-pips,
+main.app-shell.clinical-shell .initials-rail,
+main.app-shell.clinical-shell .intel-file-head,
+main.app-shell.clinical-shell .role-panel {
+  display: none !important;
+}
+
+main.app-shell.clinical-shell .deck-stage {
+  padding-bottom: calc(8rem + env(safe-area-inset-bottom, 0px)) !important;
+  touch-action: pan-y !important;
+}
+
+main.app-shell.clinical-shell .drag-shell,
+main.app-shell.clinical-shell .person-card,
+main.app-shell.clinical-shell .card-face {
+  overflow: visible !important;
+  touch-action: pan-y !important;
+}
+
+main.app-shell.clinical-shell .card-face {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  gap: 1rem !important;
+  padding: 1.18rem !important;
+}
+
+main.app-shell.clinical-shell .person-card-head {
+  display: grid;
+  gap: 0.34rem;
+  margin: 0 0 0.2rem;
+}
+
+main.app-shell.clinical-shell .person-card-head h2 {
+  margin: 0 !important;
+  color: var(--prep-ink) !important;
+  font-size: clamp(2.15rem, 11vw, 3.35rem) !important;
+  font-weight: 940 !important;
+  line-height: 0.94 !important;
+  letter-spacing: 0 !important;
+}
+
+main.app-shell.clinical-shell .person-card-head p {
+  margin: 0 !important;
+  color: var(--prep-ink-soft) !important;
+  font-size: clamp(1rem, 4.7vw, 1.22rem) !important;
+  font-weight: 720 !important;
+  line-height: 1.22 !important;
+}
+
+main.app-shell.clinical-shell .person-card-head small {
+  color: var(--prep-muted) !important;
+  font-size: 0.92rem !important;
+  font-weight: 650 !important;
+  line-height: 1.25 !important;
+}
+
+main.app-shell.clinical-shell .portrait-frame {
+  margin: 0.35rem auto 0.35rem !important;
+}
+
+main.app-shell.clinical-shell .prompt-line {
+  margin: 0.1rem 0 0 !important;
+  color: var(--prep-muted) !important;
+  font-size: 1rem !important;
+}
+
+main.app-shell.clinical-shell .dossier-packet-shell {
+  margin-top: 0.2rem !important;
+  overflow: visible !important;
+  touch-action: pan-x pan-y !important;
+}
+
+main.app-shell.clinical-shell .dossier-packet-carousel {
+  align-items: stretch !important;
+  min-height: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  touch-action: pan-x pan-y !important;
+}
+
+main.app-shell.clinical-shell .dossier-packet-panel {
+  min-height: 0 !important;
+  padding: 1rem !important;
+}
+
+main.app-shell.clinical-shell .study-card-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.8rem !important;
+}
+
+main.app-shell.clinical-shell .study-card-top small {
+  color: var(--prep-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 760 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap;
+}
+
+main.app-shell.clinical-shell .roster-orbit-card.roster-card {
+  min-height: 236px !important;
+  height: auto !important;
+  padding: 1.22rem !important;
+  gap: 0.46rem !important;
+}
+
+main.app-shell.clinical-shell .roster-card .mini-portrait {
+  margin-top: 0.7rem !important;
+}
+
+main.app-shell.clinical-shell .roster-card strong {
+  margin: 0 !important;
+}
+
+main.app-shell.clinical-shell .roster-card small {
+  margin: 0 !important;
+  -webkit-line-clamp: 4;
+}
+
 /* Prep Room no-glass cleanup. Keep after the final lock. */
 .clinical-shell button::before,
 .clinical-shell button::after,

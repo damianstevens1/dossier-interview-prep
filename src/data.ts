@@ -637,7 +637,7 @@ export const PROVENANCE_SECTIONS = [
     id: "extracted",
     label: "Built From It",
     bullets: [
-      "Eight seeded person dossiers with initials, evidence IDs, function, question, and source chips.",
+      "Eight seeded people with initials, source-note IDs, function, question, and prep context.",
       "Screenshot-derived briefing cards for mission, values, ministry identity, scale, markets, sites, services, social resources, org structure, and leadership matrix context.",
       "Strategy flashcards that convert the pre-read and recruiter guidance into interview answer angles.",
       "Local import parser that can attach user-provided profile text or pasted interview intel to localStorage dossiers.",
@@ -1030,14 +1030,14 @@ const whoAnswer = (person: PersonDossier) => {
 
   return `${person.name} is listed as ${person.functionInInterview}. Current role data is ${roleLine(
     person,
-  )}. Do not add unsourced profile claims. Use the calendar/email trail to frame them as part of the interview dossier.`;
+  )}. Do not add unsourced profile claims. Use the calendar/email trail to frame them as part of the interview prep.`;
 };
 
 export const FLASH_CARDS: FlashCard[] = [
   ...SEED_PEOPLE.flatMap((person) => [
     {
       id: `${person.id}-who`,
-      category: "Person File" as const,
+      category: "Person" as const,
       title: `Who is ${person.name}?`,
       prompt: `Who is ${person.name}?`,
       answer: whoAnswer(person),
@@ -1102,7 +1102,7 @@ export const FLASH_CARDS: FlashCard[] = [
     title: "Colene profile packet",
     prompt: "What did the uploaded Colene screenshots add?",
     answer:
-      "The uploaded screenshots add a user-provided profile packet: visible current role as VP - Community Health Ministries at Ascension, a profile header and portrait, public health and healthcare administration education, leadership/equity certification context, and services/keywords around healthcare consulting, strategic planning, program management, change management, diversity and inclusion, and leadership development. Use these as conversation context, but keep every claim tied to the screenshot source chips.",
+      "The uploaded screenshots add a user-provided profile packet: visible current role as VP - Community Health Ministries at Ascension, a profile header and portrait, public health and healthcare administration education, leadership/equity certification context, and services/keywords around healthcare consulting, strategic planning, program management, change management, diversity and inclusion, and leadership development. Use these as conversation context, but keep every claim tied to the screenshot source notes.",
     personId: "colene-daniel",
     evidenceIds: [
       "screenshot-colene-profile-header",

@@ -579,21 +579,13 @@ function createSvgAsset(person: PersonDossier, chips: string[]) {
 }
 
 function SourceChips({
-  chips,
-  compact = false,
+  chips: _chips,
+  compact: _compact = false,
 }: {
   chips: string[];
   compact?: boolean;
 }) {
-  return (
-    <div className={compact ? "source-chips compact" : "source-chips"} aria-label="Source chips">
-      {chips.map((chip) => (
-        <span key={chip} className="source-chip">
-          {chip}
-        </span>
-      ))}
-    </div>
-  );
+  return null;
 }
 
 function EvidenceDrawer({
@@ -1107,19 +1099,6 @@ function App() {
       return shuffled;
     });
     setCurrentIndex(0);
-  }
-
-  function markProfileStatus(status: ProfileStatus) {
-    setPeople((previous) =>
-      previous.map((person) =>
-        person.id === currentPerson.id
-          ? {
-              ...person,
-              profileStatus: status,
-            }
-          : person,
-      ),
-    );
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -1659,7 +1638,6 @@ function App() {
       "Identity",
       currentPerson.profileBackdropUrl || currentPerson.profileBackgroundSummary ? "Background" : null,
       currentProfilePacketSources.length > 0 ? "Packet" : null,
-      "Mark",
       "Context",
       "Priorities",
       "Approach",
@@ -1788,18 +1766,11 @@ function App() {
               key={currentPerson.id}
             >
               <div className="card-face card-front">
-                <div className="file-tab">{currentPerson.initials}</div>
-                <div className="reticle" aria-hidden="true" />
-                <div className="confidential-stamp" aria-hidden="true">
-                  READY
-                </div>
-                <p className="kicker">PERSON</p>
-                <div className="intel-file-head">
-                  <strong>Review details</strong>
-                  <span>Person: {currentPerson.name}</span>
-                  <span>Prep set: Interview</span>
-                  <span>Status: {roleConfidence(currentPerson)}</span>
-                </div>
+                <header className="person-card-head">
+                  <h2>{currentPerson.name}</h2>
+                  <p>{displayRole(currentPerson)}</p>
+                  <small>{currentPerson.email ?? "Email pending"}</small>
+                </header>
                 <div className={currentPerson.profilePhotoUrl ? "portrait-frame has-photo" : "portrait-frame"}>
                   {currentPerson.profilePhotoUrl ? (
                     <img src={currentPerson.profilePhotoUrl} alt={`${currentPerson.name} user-provided profile`} />
@@ -1807,22 +1778,15 @@ function App() {
                     <span>{currentPerson.initials}</span>
                   )}
                 </div>
-                <h2>{currentPerson.name}</h2>
-                <p className="email-line">{currentPerson.email ?? "Email pending"}</p>
-                <div className="role-panel">
-                  <span>ROLE</span>
-                  <strong>{displayRole(currentPerson)}</strong>
-                  <small>{roleConfidence(currentPerson)}</small>
-                </div>
-                <p className="prompt-line">Tap Reveal for the practice notes.</p>
-                <SourceChips chips={currentChips} />
+                <p className="prompt-line">Reveal practice notes when you are ready.</p>
               </div>
 
               <div className="card-face card-back">
-                <div className="file-tab">{currentPerson.initials}</div>
-                <p className="kicker">PRACTICE NOTES</p>
-                <h2>{currentPerson.name}</h2>
-                <p className="email-line">{currentPerson.email ?? "Email pending"}</p>
+                <header className="person-card-head">
+                  <h2>{currentPerson.name}</h2>
+                  <p>{displayRole(currentPerson)}</p>
+                  <small>{currentPerson.email ?? "Email pending"}</small>
+                </header>
 
                 <section
                   className="dossier-packet-shell"
@@ -1925,23 +1889,6 @@ function App() {
                       </article>
                     ) : null}
 
-                    <article className="dossier-packet-panel profile-status">
-                      <span>Profile mark</span>
-                      <h3>Evidence status</h3>
-                      <div>
-                        {(["verified", "user-provided", "profile-pending"] as ProfileStatus[]).map((status) => (
-                          <button
-                            key={status}
-                            type="button"
-                            className={currentPerson.profileStatus === status ? "active" : ""}
-                            onClick={() => markProfileStatus(status)}
-                          >
-                            {statusLabel(status)}
-                          </button>
-                        ))}
-                      </div>
-                    </article>
-
                     <article className="dossier-packet-panel reveal-card-panel">
                       <span>Context</span>
                       <h3>Why this person matters</h3>
@@ -1978,17 +1925,9 @@ function App() {
                       <article className="dossier-packet-panel reveal-card-panel study-card">
                         <div className="study-card-top">
                           <span>{activeStudyCard.category}</span>
-                          <div className="study-pips">
-                            {currentStudyCards.map((card, index) => (
-                              <button
-                                key={card.id}
-                                type="button"
-                                aria-label={`Show flashcard ${index + 1}`}
-                                className={index === studyCardIndex ? "active" : ""}
-                                onClick={() => setStudyCardIndex(index)}
-                              />
-                            ))}
-                          </div>
+                          <small>
+                            Card {studyCardIndex + 1} of {currentStudyCards.length}
+                          </small>
                         </div>
                         <h3>{activeStudyCard.prompt}</h3>
                         <p>{activeStudyCard.answer}</p>
@@ -1997,19 +1936,6 @@ function App() {
                     ) : null}
                   </div>
 
-                  <nav className="dossier-panel-pips" aria-label="Prep card panels">
-                    {dossierPanelLabels.map((label, index) => (
-                      <button
-                        key={`${label}-${index}`}
-                        type="button"
-                        className={index === dossierPanelIndex ? "active" : ""}
-                        aria-label={`Show ${label} panel`}
-                        onClick={() => scrollDossierPanel(index)}
-                      >
-                        <span>{label}</span>
-                      </button>
-                    ))}
-                  </nav>
                 </section>
 
                 <SourceChips chips={currentChips} />
@@ -2075,7 +2001,8 @@ function App() {
                   }
                 }}
               >
-                <span className="mini-tab">{person.initials}</span>
+                <strong>{person.name}</strong>
+                <small>{displayRole(person)}</small>
                 <span className={person.profilePhotoUrl ? "mini-portrait has-photo" : "mini-portrait"}>
                   {person.profilePhotoUrl ? (
                     <img src={person.profilePhotoUrl} alt={`${person.name} user-provided profile`} />
@@ -2083,8 +2010,6 @@ function App() {
                     person.initials
                   )}
                 </span>
-                <strong>{person.name}</strong>
-                <small>{displayRole(person)}</small>
                 <SourceChips chips={chips} compact />
               </article>
             );
