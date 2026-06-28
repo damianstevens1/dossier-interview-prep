@@ -40,6 +40,15 @@ export type FlashCard = {
   evidenceIds: string[];
 };
 
+export type PreReadDeckArtifact = {
+  id: string;
+  evidenceId: string;
+  label: string;
+  title: string;
+  imageUrl: string;
+  summary: string;
+};
+
 export type ParsedProfileIntel = {
   headline?: string;
   currentRole?: string;

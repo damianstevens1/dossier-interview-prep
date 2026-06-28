@@ -1,4 +1,4 @@
-import type { FlashCard, PersonDossier, SourceEvidence } from "./types";
+import type { FlashCard, PersonDossier, PreReadDeckArtifact, SourceEvidence } from "./types";
 
 export const SOURCE_EVIDENCE: SourceEvidence[] = [
   {
@@ -474,6 +474,81 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     excerpt:
       "The leadership matrix screenshot is partially legible. Visible entries include Arkansas, New Orleans, San Antonio, Kansas City, and El Paso; names visible include Michael Griffin, Lisa Goodgame, Frank Folino, Eduardo Ramirez, Stacy Mayer, Chelsea Fernandez, Christina Paz, and Howard Williams. Small service columns were not converted into exact claims.",
     confidence: "user-provided",
+  },
+];
+
+export const PRE_READ_DECK: PreReadDeckArtifact[] = [
+  {
+    id: "chm-pre-read-cover",
+    evidenceId: "pre-read-slides-jun1",
+    label: "Deck 01",
+    title: "Community Health Ministries pre-read",
+    imageUrl: "/assets/pre-read-deck/chm-pre-read-cover.jpg",
+    summary:
+      "The supplied pre-read is for the Community Health Ministries Program Manager conversation. Treat this as the source packet for role context, mission language, organizational structure, and the CHM service footprint.",
+  },
+  {
+    id: "mission-vision-values",
+    evidenceId: "pre-read-mission-values-screenshot",
+    label: "Deck 02",
+    title: "Mission, vision, and values",
+    imageUrl: "/assets/pre-read-deck/mission-vision-values.jpg",
+    summary:
+      "Use mission language carefully: serve all persons, special attention to poor and vulnerable communities, health/healing/hope, and values such as service of the poor, reverence, integrity, wisdom, creativity, and dedication.",
+  },
+  {
+    id: "ministry-identity",
+    evidenceId: "pre-read-ministry-identity-screenshot",
+    label: "Deck 03",
+    title: "What ministry means",
+    imageUrl: "/assets/pre-read-deck/ministry-identity.jpg",
+    summary:
+      "The ministry identity slide points to human dignity, justice, and the common good. Translate that into practical PM behavior: reduce confusion, clarify priorities, and help teams serve communities more effectively.",
+  },
+  {
+    id: "ascension-markets-map",
+    evidenceId: "pre-read-market-map-screenshot",
+    label: "Deck 04",
+    title: "Markets and CHM footprint",
+    imageUrl: "/assets/pre-read-deck/ascension-markets-map.jpg",
+    summary:
+      "The map shows a distributed CHM footprint across multiple markets. The useful answer angle is not memorizing every dot; it is showing respect for local variation while building shared communication and visibility.",
+  },
+  {
+    id: "community-impact-org-structure",
+    evidenceId: "pre-read-org-structure-screenshot",
+    label: "Deck 05",
+    title: "Community Impact org structure",
+    imageUrl: "/assets/pre-read-deck/community-impact-org-structure.jpg",
+    summary:
+      "The org chart places Colene Daniel over Community Health Ministries and marks where the Program Manager role sits. Use it narrowly: the role likely supports CHM alignment, communication, and practical follow-through.",
+  },
+  {
+    id: "chm-leadership-services-matrix",
+    evidenceId: "pre-read-leadership-matrix-screenshot",
+    label: "Deck 06",
+    title: "Leadership, structure, and services",
+    imageUrl: "/assets/pre-read-deck/chm-leadership-services-matrix.jpg",
+    summary:
+      "The matrix shows multiple CHM locations, leaders, and service lines. Avoid overstating small columns; use it to ask how the Program Manager should balance common operating rhythm with site-specific needs.",
+  },
+  {
+    id: "hl-interview-calendar",
+    evidenceId: "calendar-hl-jun4",
+    label: "Invite 01",
+    title: "HL interview calendar invite",
+    imageUrl: "/assets/pre-read-deck/hl-interview-calendar.jpg",
+    summary:
+      "The June 4 hiring leader invite confirms the interview timing, Stephanie as organizer, and key attendees including Jennifer, Judi, Lisa, Shalon, and Maria. It also shows the pre-read attachment was part of the interview packet.",
+  },
+  {
+    id: "hl-interview-email",
+    evidenceId: "calendar-hl-jun4",
+    label: "Invite 02",
+    title: "Gmail invite record",
+    imageUrl: "/assets/pre-read-deck/hl-interview-email.jpg",
+    summary:
+      "The Gmail invite view confirms Stephanie sent the HL interview invitation and names Shalon, Lisa, Judi, and Karen on the invite thread. Use it as process evidence, not as a place to invent extra profile claims.",
   },
 ];
 

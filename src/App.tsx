@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
-import { BRIEFING_CARDS, FLASH_CARDS, PROVENANCE_SECTIONS, SEED_PEOPLE, SOURCE_EVIDENCE } from "./data";
+import { BRIEFING_CARDS, FLASH_CARDS, PRE_READ_DECK, PROVENANCE_SECTIONS, SEED_PEOPLE, SOURCE_EVIDENCE } from "./data";
 import type { FlashCard, ParsedProfileIntel, PersonDossier, ProfileStatus, SourceEvidence } from "./types";
 
 type ViewMode = "deck" | "missions" | "roster" | "import" | "briefing" | "metadata";
@@ -668,6 +668,9 @@ function App() {
   const [exportAsset, setExportAsset] = useState<{ url: string; filename: string; label: string } | null>(null);
   const [briefingIndex, setBriefingIndex] = useState(0);
   const [dossierPanelIndex, setDossierPanelIndex] = useState(0);
+  const [sourceDeckIndex, setSourceDeckIndex] = useState(0);
+  const [preReadCardIndex, setPreReadCardIndex] = useState(0);
+  const [isPreReadAnswerVisible, setIsPreReadAnswerVisible] = useState(false);
   const motionTimer = useRef<number | undefined>(undefined);
   const flightTimer = useRef<number | undefined>(undefined);
   const pointerStart = useRef<number | null>(null);
@@ -716,6 +719,17 @@ function App() {
   const activeBriefingSources = activeBriefing.evidenceIds
     .map((id) => sourcesById.get(id))
     .filter((source): source is SourceEvidence => Boolean(source));
+  const preReadStudyCards = useMemo(
+    () =>
+      FLASH_CARDS.filter(
+        (card) =>
+          !card.personId &&
+          (card.id === "overall-interview-strategy" || card.evidenceIds.some((id) => id.startsWith("pre-read-"))),
+      ),
+    [],
+  );
+  const activeSourceDeckItem = PRE_READ_DECK[sourceDeckIndex] ?? PRE_READ_DECK[0];
+  const activePreReadCard = preReadStudyCards[preReadCardIndex] ?? preReadStudyCards[0];
   const deckProgress = people.length ? Math.round(((currentIndex + 1) / people.length) * 100) : 0;
   const pendingProfileCount = people.filter((person) => person.profileStatus === "profile-pending").length;
   const sourcedPersonCount = people.filter((person) => person.evidenceIds.length > 0).length;
@@ -1102,6 +1116,17 @@ function App() {
       return shuffled;
     });
     setCurrentIndex(0);
+  }
+
+  function goToSourceDeckItem(index: number) {
+    if (!PRE_READ_DECK.length) return;
+    setSourceDeckIndex(((index % PRE_READ_DECK.length) + PRE_READ_DECK.length) % PRE_READ_DECK.length);
+  }
+
+  function goToPreReadCard(index: number) {
+    if (!preReadStudyCards.length) return;
+    setPreReadCardIndex(((index % preReadStudyCards.length) + preReadStudyCards.length) % preReadStudyCards.length);
+    setIsPreReadAnswerVisible(false);
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -1648,6 +1673,10 @@ function App() {
       "Question",
       activeStudyCard ? "Study" : null,
     ].filter((label): label is string => Boolean(label));
+    const activeDeckEvidence = activeSourceDeckItem ? sourcesById.get(activeSourceDeckItem.evidenceId) : undefined;
+    const activePreReadCardChips = activePreReadCard
+      ? sourceChips(activePreReadCard.evidenceIds, sourcesById)
+      : ["PRE-READ"];
 
     return (
       <>
@@ -1736,6 +1765,97 @@ function App() {
           <button type="button" onClick={goNext}>
             Next
           </button>
+        </section>
+
+        <section className="pre-read-study-stack" aria-label="Pre-read deck and flashcards">
+          <article className="pre-read-deck-module">
+            <div className="study-module-header">
+              <div>
+                <p className="kicker">PRE-READ DECK</p>
+                <h2>{activeSourceDeckItem.title}</h2>
+              </div>
+              <span>
+                {sourceDeckIndex + 1}/{PRE_READ_DECK.length}
+              </span>
+            </div>
+
+            <div className="pre-read-artifact-frame">
+              <img src={activeSourceDeckItem.imageUrl} alt={activeSourceDeckItem.title} />
+            </div>
+
+            <div className="pre-read-artifact-copy">
+              <span>{activeSourceDeckItem.label}</span>
+              <p>{activeSourceDeckItem.summary}</p>
+              {activeDeckEvidence ? <small>{activeDeckEvidence.title}</small> : null}
+            </div>
+
+            <div className="pre-read-deck-controls" aria-label="Pre-read deck controls">
+              <button type="button" onClick={() => goToSourceDeckItem(sourceDeckIndex - 1)}>
+                Previous
+              </button>
+              <button type="button" onClick={() => goToSourceDeckItem(sourceDeckIndex + 1)}>
+                Next
+              </button>
+            </div>
+
+            <div className="pre-read-thumbnail-rail" aria-label="Pre-read deck thumbnails">
+              {PRE_READ_DECK.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={index === sourceDeckIndex ? "active" : ""}
+                  aria-label={`Show ${item.title}`}
+                  onClick={() => goToSourceDeckItem(index)}
+                >
+                  <img src={item.imageUrl} alt="" />
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                </button>
+              ))}
+            </div>
+          </article>
+
+          {activePreReadCard ? (
+            <article className={isPreReadAnswerVisible ? "qa-flashcard-module is-answer-visible" : "qa-flashcard-module"}>
+              <div className="study-module-header">
+                <div>
+                  <p className="kicker">FLASHCARDS</p>
+                  <h2>{activePreReadCard.title}</h2>
+                </div>
+                <span>
+                  {preReadCardIndex + 1}/{preReadStudyCards.length}
+                </span>
+              </div>
+
+              <div className="qa-card-surface">
+                <span>{activePreReadCard.category}</span>
+                <h3>{activePreReadCard.prompt}</h3>
+                <div className="qa-answer" aria-live="polite">
+                  {isPreReadAnswerVisible ? (
+                    <p>{activePreReadCard.answer}</p>
+                  ) : (
+                    <p>Tap Reveal Answer when you are ready to check the response.</p>
+                  )}
+                </div>
+                <SourceChips chips={activePreReadCardChips} compact />
+              </div>
+
+              <div className="qa-flashcard-controls" aria-label="Pre-read flashcard controls">
+                <button type="button" onClick={() => goToPreReadCard(preReadCardIndex - 1)}>
+                  Previous
+                </button>
+                <button
+                  className="primary-action"
+                  type="button"
+                  onClick={() => setIsPreReadAnswerVisible((value) => !value)}
+                >
+                  {isPreReadAnswerVisible ? "Hide Answer" : "Reveal Answer"}
+                </button>
+                <button type="button" onClick={() => goToPreReadCard(preReadCardIndex + 1)}>
+                  Next
+                </button>
+              </div>
+            </article>
+          ) : null}
         </section>
 
         <section className="deck-stage" data-motion={deckMotion}>
