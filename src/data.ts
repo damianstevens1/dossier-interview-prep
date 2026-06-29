@@ -7,7 +7,7 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     title: "Calendar Invite: Mgr Interview - Damian Stevens - Program Mgr Community Impact",
     date: "2026-06-18",
     excerpt:
-      "Found: Colene Daniel, Mary Clabeaux, Shalon Robinson, Lisa Stockdale, Judi Buchanan. Interpretation: final manager interview / decision-stage panel.",
+      "Found: Colene Daniel, Shalon Robinson, Lisa Stockdale, Judi Buchanan. Interpretation: final manager interview / decision-stage panel.",
     confidence: "verified",
   },
   {
@@ -43,7 +43,7 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     title: "User Thank-You Email",
     date: "2026-06-18",
     excerpt:
-      "Found: Colene, Mary, Jennifer, Judi, Lisa, Shalon. Interpretation: confirms people the candidate remembers meeting.",
+      "Found: Colene, Jennifer, Judi, Lisa, Shalon. Interpretation: confirms people the candidate remembers meeting.",
     confidence: "user-provided",
   },
   {
@@ -152,52 +152,6 @@ export const SOURCE_EVIDENCE: SourceEvidence[] = [
     date: "2026-06-23",
     excerpt:
       "Uploaded skills/services screenshots show Finance connected to Vice President - Community Health Ministries at Ascension, Business Development with 15 endorsements, services/keywords including Healthcare Consulting, Business Consulting, Non-profit Consulting, Strategic Planning, Program Management, Change Management, Diversity and Inclusion, and Leadership Development, plus activity showing 1,968 followers and visible recommendation context from Kassondra E. Riley.",
-    confidence: "user-provided",
-  },
-  {
-    id: "linkedin-mary-public-profile",
-    type: "linkedin",
-    title: "Public LinkedIn result: Mary Clabeaux",
-    date: "2026-06-22",
-    url: "https://www.linkedin.com/in/maryclabeaux",
-    excerpt:
-      "Public LinkedIn result lists Mary Clabeaux, PHR as a Human Resources Business Partner associated with Ascension.",
-    confidence: "verified",
-  },
-  {
-    id: "screenshot-mary-profile-header",
-    type: "screenshot",
-    title: "User-provided LinkedIn screenshot: Mary profile header",
-    date: "2026-06-23",
-    excerpt:
-      "Uploaded profile screenshot shows Mary Clabeaux, PHR as Human Resources Business Partner; Ascension; Davenport University; Grand Rapids Metropolitan Area; 500+ connections. About text describes an HR professional focused on leadership development, diversity, recruitment, communication, people/projects, deadline-driven work, and self-starting execution.",
-    confidence: "user-provided",
-  },
-  {
-    id: "screenshot-mary-current-experience",
-    type: "screenshot",
-    title: "User-provided LinkedIn screenshot: Mary current experience",
-    date: "2026-06-23",
-    excerpt:
-      "Uploaded experience screenshot shows Ascension experience of 6 years 5 months, including Human Resources Business Partner, full-time, Sep 2024 to present, and Regional Human Resources Consultant, Feb 2020 to present, with visible training, coaching, and communication-program language.",
-    confidence: "user-provided",
-  },
-  {
-    id: "screenshot-mary-prior-experience-education",
-    type: "screenshot",
-    title: "User-provided LinkedIn screenshot: Mary prior experience and education",
-    date: "2026-06-23",
-    excerpt:
-      "Uploaded prior-experience screenshot shows Ricoh USA experience totaling 23 years 4 months, including Human Resources - Leadership Development/Diversity Project Manager and Human Resources Manager; Staffing Manager at Robert Half International; Director at Ross Medical Education Center; and education at Davenport University, Bachelor of Business Administration, General Business.",
-    confidence: "user-provided",
-  },
-  {
-    id: "screenshot-mary-licenses-volunteering-skills",
-    type: "screenshot",
-    title: "User-provided LinkedIn screenshot: Mary licenses, volunteering, and skills",
-    date: "2026-06-23",
-    excerpt:
-      "Uploaded screenshot shows licenses/certifications including How to Use LinkedIn Learning, issued Aug 2019, and SHRM-CP, issued Aug 2019 and expired Aug 2022; volunteering as Director of Workforce Readiness with Association of Human Resources Managers from Jan 2021 to present and Fundraising Leader with United Way; and skills section with Training & Development.",
     confidence: "user-provided",
   },
   {
@@ -735,7 +689,7 @@ export const PROVENANCE_SECTIONS = [
     bullets: [
       "Stephanie's role is sourced to the supplied email signature evidence, public LinkedIn role lead, and user-provided LinkedIn screenshots.",
       "Colene's VP Community Health Ministries role is sourced to both user-provided prep/pre-read material and a public LinkedIn result.",
-      "Mary, Lisa, Judi, Jennifer, and Maria now have public profile evidence records attached for role/headline context.",
+      "Lisa, Judi, Jennifer, and Maria now have public profile evidence records attached for role/headline context.",
       "Shalon has a public-web role lead attached, but it remains marked as a confirmation lead rather than verified LinkedIn profile data.",
       "Tenure, current LinkedIn headline, and company-history claims are included only where public results or user-provided screenshots directly support them.",
     ],
@@ -828,45 +782,6 @@ export const SEED_PEOPLE: PersonDossier[] = [
       "pre-read-org-structure-screenshot",
       "email-thank-you-jun18",
       "email-recruiter-followup-jun8",
-    ],
-  },
-  {
-    id: "mary-clabeaux",
-    name: "Mary Clabeaux",
-    initials: "MC",
-    email: "mary.clabeaux@ascension.org",
-    roleFromProfile: "Human Resources Business Partner",
-    profileStatus: "verified",
-    functionInInterview: "Final interview participant",
-    profileBackdropUrl: "/assets/profile-packets/mary-clabeaux-banner.jpg",
-    profileBackgroundSummary:
-      "User-provided profile screenshots show an HR Business Partner profile tied to Ascension, Davenport University, leadership development, diversity, recruitment, communication, workforce readiness, and training/development themes. No real profile portrait was visible in the supplied screenshots, so the app keeps initials instead of inventing a face.",
-    whyTheyMatter:
-      "Mary is included in the final manager interview invite and is also named in the user's thank-you email. A public LinkedIn result and user-provided profile screenshots list her as a Human Resources Business Partner associated with Ascension.",
-    likelyCaresAbout: [
-      "How you clarify ambiguity",
-      "How you communicate with a panel",
-      "Whether your examples match the alignment-first guidance",
-      "How you would build trust before pushing process changes",
-      "Leadership development, recruitment, diversity, and stakeholder communication",
-    ],
-    howToSpeakToThem: [
-      "Treat the HR Business Partner role as sourced to public profile evidence.",
-      "Use concrete examples of listening, synthesis, and follow-through.",
-      "Make your answer easy for a panel participant to repeat later.",
-      "Frame people/process examples in terms of communication, leadership support, and practical change adoption.",
-      "Ask questions that invite her view of success without presuming her function.",
-    ],
-    smartQuestion:
-      "From your seat, where does this role most need clarity or alignment early on?",
-    evidenceIds: [
-      "calendar-final-manager-jun18",
-      "email-thank-you-jun18",
-      "linkedin-mary-public-profile",
-      "screenshot-mary-profile-header",
-      "screenshot-mary-current-experience",
-      "screenshot-mary-prior-experience-education",
-      "screenshot-mary-licenses-volunteering-skills",
     ],
   },
   {
@@ -1237,21 +1152,6 @@ export const FLASH_CARDS: FlashCard[] = [
     evidenceIds: [
       "screenshot-maria-experience-community-benefit",
       "screenshot-maria-education-nursing",
-    ],
-  },
-  {
-    id: "mary-profile-screenshot-packet",
-    category: "Evidence",
-    title: "Mary profile packet",
-    prompt: "What did the uploaded Mary screenshots add?",
-    answer:
-      "The uploaded screenshots add practical HR context for Mary: HR Business Partner at Ascension, regional HR consulting, leadership development, diversity, recruitment, training, communication programs, workforce readiness, and Training & Development. With Mary, keep answers clear, people-aware, and easy to retell: how you listen, clarify change, support leaders, and make follow-through visible.",
-    personId: "mary-clabeaux",
-    evidenceIds: [
-      "screenshot-mary-profile-header",
-      "screenshot-mary-current-experience",
-      "screenshot-mary-prior-experience-education",
-      "screenshot-mary-licenses-volunteering-skills",
     ],
   },
   {

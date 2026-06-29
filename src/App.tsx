@@ -3000,7 +3000,7 @@ function App() {
             <textarea
               value={intelText}
               onChange={(event) => setIntelText(event.target.value)}
-              placeholder="Example: Stephanie Gross <stephanie.gross1@ascension.org> invited Colene Daniel and Mary Clabeaux..."
+              placeholder="Example: Stephanie Gross <stephanie.gross1@ascension.org> invited Colene Daniel and Lisa Stockdale..."
             />
           </label>
 
